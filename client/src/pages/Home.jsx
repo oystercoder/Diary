@@ -11,12 +11,14 @@ import Employee from "./Employee";
 import Wholesale from "./Wholesale";
 import Products from "./Products";
 import Stores from "./Stores";
+import useAuth from './Auth.jsx';
 
 export default function Home() {
   const [activeComponent, setActiveComponent] = useState('dashboard');
   const [, , removeCookie] = useCookies(["access_token"]); // Use cookies
   const navigate = useNavigate(); // Initialize navigate
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for dropdown menu
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
+  useAuth();// State for dropdown menu
 
   const onSidebarClick = (component) => {
     setActiveComponent(component);

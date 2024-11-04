@@ -399,8 +399,8 @@ const Employee = () => {
       <div className="flex justify-between w-full">
         <span className="text-center mt-8 ml-11 items-start">Employee Details:</span>
         <div className="flex space-x-4">
-          <span className='text-center mt-8 bg-gray-500 p-3 rounded-lg mr-14'>
-            <button onClick={toggleForm} className="font-semibold items-end text-white">
+          <span className='text-center mt-8 bg-black p-3 rounded-lg mr-14'>
+            <button onClick={toggleForm} className="text-xs md:text-lgmd:font-semibold items-end text-white">
               {showForm ? 'CANCEL' : 'ADD EMPLOYEE'}
             </button>
           </span>

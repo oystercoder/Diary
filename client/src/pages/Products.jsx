@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 
 const Products = () => {
@@ -60,17 +59,20 @@ const Products = () => {
 
   return (
     <div className='flex flex-col items-center h-screen bg-gray-200'>
-      <button 
-        onClick={() => setIsModalOpen(true)} 
-        className="mb-4 text-xl bg-black mt-5 justify-end text-white p-2 rounded-lg hover:bg-blue-700 transition duration-300"
-      >
-        Add Product
-      </button>
+      <div className="w-3/4 flex justify-between items-center mb-4 p-4">
+        <h1 className="text-2xl font-bold ">Product List</h1>
+        <button 
+          onClick={() => setIsModalOpen(true)} 
+          className="text-xl bg-black text-white p-2 rounded-lg hover:bg-blue-700 transition duration-300"
+        >
+          Add Product
+        </button>
+      </div>
 
       {/* Product Table */}
-      <table className="w-3/4 bg-white shadow-md rounded-lg ">
+      <table className="w-3/4 bg-white shadow-md rounded-lg border border-gray-300">
         <thead>
-          <tr className="bg-gray-800 text-white">
+          <tr className="text-black border border-b-2">
             <th className="py-3 px-6 text-left">Product Name</th>
             <th className="py-3 px-6 text-left">Units</th>
             <th className="py-3 px-6 text-left">Price</th>
@@ -143,10 +145,10 @@ const Products = () => {
               </div>
 
               {/* Submit Button */}
-              <div className="flex items-center justify-center ">
+              <div className="flex items-center justify-center">
                 <button 
                   type="submit" 
-                  className="w-full  max-w-xs mt-8 text-2xl bg-black text-white p-2 rounded-lg hover:bg-gray-800 transition duration-300"
+                  className="w-full max-w-xs mt-8 text-2xl bg-black text-white p-2 rounded-lg hover:bg-gray-800 transition duration-300"
                 >
                   Add Product
                 </button>

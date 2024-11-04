@@ -71,32 +71,36 @@ const Store = () => {
 
   return (
     <div className='flex flex-col items-center bg-gray-200 h-lvh p-6'>
-      <button 
-        onClick={() => setIsModalOpen(true)} 
-        className="mb-4 text-xl bg-black text-white p-2 rounded-lg hover:bg-gray-300 hover:text-black transition duration-300"
-      >
-        Add Store
-      </button>
+      {/* Header Section */}
+      <div className="w-3/4 flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Store List</h1>
+        <button 
+          onClick={() => setIsModalOpen(true)} 
+          className="text-xl bg-black text-white p-2 rounded-lg hover:bg-blue-700 transition duration-300"
+        >
+          Add Store
+        </button>
+      </div>
 
-   {/* Store Table */}
-<table className="w-3/4 bg-white shadow-md rounded-lg overflow-hidden">
-  <thead>
-    <tr className="bg-gray-800 text-white">
-      <th className="py-3 px-6 text-left">Store ID</th>
-      <th className="py-3 px-6 text-left">Store Name</th>
-      <th className="py-3 px-6 text-left">Location</th>
-    </tr>
-  </thead>
-  <tbody>
-    {stores.map((store) => (
-      <tr key={store.storeId} className="border-b hover:bg-gray-100">
-        <td className="py-4 px-6">{store.storeId}</td>
-        <td className="py-4 px-6">{store.name}</td>
-        <td className="py-4 px-6">{store.location}</td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+      {/* Store Table */}
+      <table className="w-3/4 bg-white shadow-md rounded-lg border border-gray-300 overflow-hidden">
+        <thead>
+          <tr className=" text-black border border-b-2">
+            <th className="py-3 px-6 text-left">Store ID</th>
+            <th className="py-3 px-6 text-left">Store Name</th>
+            <th className="py-3 px-6 text-left">Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          {stores.map((store) => (
+            <tr key={store.storeId} className="border-b hover:bg-gray-100">
+              <td className="py-4 px-6">{store.storeId}</td>
+              <td className="py-4 px-6">{store.name}</td>
+              <td className="py-4 px-6">{store.location}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
       {/* Modal for Store Entry Form */}
       {isModalOpen && (
