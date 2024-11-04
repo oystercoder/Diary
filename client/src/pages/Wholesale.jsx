@@ -137,26 +137,27 @@ const Wholesale = () => {
       )}
 
       {/* Wholesalers Table */}
-      <div className="overflow-x-auto mt-6 w-full max-w-2xl">
-        <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-          <thead>
-            <tr className="bg-gray-800 text-white">
-              <th className="py-2 px-4">Name</th>
-              <th className="py-2 px-4">Contact Number</th>
-              <th className="py-2 px-4">Location</th>
-            </tr>
-          </thead>
-          <tbody>
-            {wholesalers.map((wholesaler, index) => (
-              <tr key={index} className="border-b hover:bg-gray-100">
-                <td className="py-2 px-4">{wholesaler.name}</td>
-                <td className="py-2 px-4">{wholesaler.contactNumber}</td>
-                <td className="py-2 px-4">{wholesaler.location}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <div className="overflow-x-auto mt-6 w-3/4">
+  <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+    <thead>
+      <tr className="bg-gray-800 text-white">
+        <th className="py-2 px-4 text-left">Name</th>
+        <th className="py-2 px-4 text-left">Contact Number</th>
+        <th className="py-2 px-4 text-left">Location</th>
+      </tr>
+    </thead>
+    <tbody>
+      {wholesalers.map((wholesaler, index) => (
+        <tr key={index} className="border-b hover:bg-gray-100">
+          <td className="py-2 px-4 text-left">{wholesaler.name}</td>
+          <td className="py-2 px-4 text-left">{wholesaler.contactNumber}</td>
+          <td className="py-2 px-4 text-left">{wholesaler.location}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
     </div>
   );
 }

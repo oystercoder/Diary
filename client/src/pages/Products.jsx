@@ -62,13 +62,13 @@ const Products = () => {
     <div className='flex flex-col items-center h-screen bg-gray-200'>
       <button 
         onClick={() => setIsModalOpen(true)} 
-        className="mb-4 text-xl bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700 transition duration-300"
+        className="mb-4 text-xl bg-black mt-5 justify-end text-white p-2 rounded-lg hover:bg-blue-700 transition duration-300"
       >
         Add Product
       </button>
 
       {/* Product Table */}
-      <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+      <table className="w-3/4 bg-white shadow-md rounded-lg ">
         <thead>
           <tr className="bg-gray-800 text-white">
             <th className="py-3 px-6 text-left">Product Name</th>
@@ -81,7 +81,7 @@ const Products = () => {
             <tr key={product.name} className="border-b hover:bg-gray-100">
               <td className="py-4 px-6">{product.name}</td>
               <td className="py-4 px-6">{product.units}</td>
-              <td className="py-4 px-6">{product.price} ₹</td>
+              <td className="py-4 px-6">₹{product.price}</td>
             </tr>
           ))}
         </tbody>
@@ -90,7 +90,7 @@ const Products = () => {
       {/* Modal for Product Entry Form */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className='relative bg-white p-6 rounded-lg shadow-md w-full max-w-lg'>
+          <div className='relative bg-white p-6 rounded-lg shadow-md w-full max-w-lg sm:ml-2 sm:mr-2 md:ml-4 md:mr-4'>
             <button 
               onClick={() => setIsModalOpen(false)} 
               className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
@@ -143,10 +143,10 @@ const Products = () => {
               </div>
 
               {/* Submit Button */}
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center ">
                 <button 
                   type="submit" 
-                  className="w-full max-w-xs mt-8 text-2xl bg-black text-white p-2 rounded-lg hover:bg-gray-800 transition duration-300"
+                  className="w-full  max-w-xs mt-8 text-2xl bg-black text-white p-2 rounded-lg hover:bg-gray-800 transition duration-300"
                 >
                   Add Product
                 </button>

@@ -184,22 +184,22 @@ const Diary = () => {
       )}
 
       {/* Display Entries */}
-      <div className='mt-6 w-full max-w-lg'>
+      <div className='mt-6 w-3/4'>
         <h2 className='text-xl font-semibold mb-4'>Diary Entries</h2>
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <table className='min-w-full border-collapse border border-gray-200'>
             <thead className='bg-gray-100'>
               <tr>
-                <th className='border border-gray-300 p-2 text-left'>Diary</th>
-                <th className='border border-gray-300 p-2 text-left'>Manager Name</th>
+                <th className='border border-gray-300 p-2 text-center'>Diary</th>
+                <th className='border border-gray-300 p-2 text-center'>Manager Name</th>
               </tr>
             </thead>
             <tbody>
               {entries.length > 0 ? (
                 entries.map((entry, index) => (
                   <tr key={index}>
-                    <td className='border border-gray-300 p-2'>{entry.diary}</td>
-                    <td className='border border-gray-300 p-2'>{entry.managerName}</td>
+                    <td className='border border-gray-300  text-center p-4'>{entry.diary}</td>
+                    <td className='border border-gray-300  text-center p-4'>{entry.managerName}</td>
                   </tr>
                 ))
               ) : (

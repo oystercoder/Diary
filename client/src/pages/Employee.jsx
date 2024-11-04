@@ -456,35 +456,36 @@ const Employee = () => {
 
       {/* Employee List in Table Format */}
       <div className="flex flex-col items-center mt-4 ml-5 mr-5">
-  <table className="min-w-full bg-white border border-gray-300 ">
-    <thead>
-      <tr>
-      <th className="py-2 border-b">S.no</th>
-        <th className="py-2 border-b">Name</th>
-        <th className="py-2 border-b">Location</th>
-        <th className="py-2 border-b">Contact Number</th>
-        <th className="py-2 border-b">Role</th>
-        <th className="py-2 border-b">Joining Date</th>
-        <th className="py-2 border-b">Salary</th>
-      </tr>
-    </thead>
-    <tbody>
-      {employees.map((employee,index) => (
-        <tr key={employee._id} className="text-center">
-          {/* <td className="py-4 border-b"></td> */}
-          <td className="py-4 border-b ml-5">{index + 1}</td>
-
-          <td className="py-4 border-b">{employee.name}</td>
-          <td className="py-4 border-b">{employee.location}</td>
-          <td className="py-4 border-b">{employee.contactNumber}</td>
-          <td className="py-4 border-b">{employee.role}</td>
-          <td className="py-4 border-b">{new Date(employee.joiningDate).toLocaleDateString()}</td>
-          <td className="py-4 border-b">{employee.salary}</td>
+  <div className="overflow-x-auto w-full"> {/* Add this wrapper for horizontal scroll */}
+    <table className="min-w-full bg-white border border-gray-300">
+      <thead>
+        <tr className=''>
+          <th className="py-2 border-b">S.no</th>
+          <th className="py-2 border-b">Name</th>
+          <th className="py-2 border-b">Location</th>
+          <th className="py-2 border-b">Contact Number</th>
+          <th className="py-2 border-b">Role</th>
+          <th className="py-2 border-b">Joining Date</th>
+          <th className="py-2 border-b">Salary</th>
         </tr>
-      ))}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {employees.map((employee, index) => (
+          <tr key={employee._id} className="text-center">
+            <td className="py-4 border-b">{index + 1}</td>
+            <td className="py-4 border-b">{employee.name}</td>
+            <td className="py-4 border-b">{employee.location}</td>
+            <td className="py-4 border-b">{employee.contactNumber}</td>
+            <td className="py-4 border-b">{employee.role}</td>
+            <td className="py-4 border-b">{new Date(employee.joiningDate).toLocaleDateString()}</td>
+            <td className="py-4 border-b">{employee.salary}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
 </div>
+
 
     </>
   );

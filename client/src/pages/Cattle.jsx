@@ -249,38 +249,41 @@ const Cattle = () => {
 
       {/* Cattle List Table */}
       <div className="mt-6 w-full max-w-4xl bg-white rounded-lg shadow-md p-4">
-        <h2 className="text-xl font-semibold mb-4">Cattle List</h2>
-        <table className="min-w-full bg-white border border-gray-300">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 border-b">Animal</th>
-              <th className="py-2 px-4 border-b">Breed</th>
-              <th className="py-2 px-4 border-b">Gender</th>
-              <th className="py-2 px-4 border-b">Age</th>
-              <th className="py-2 px-4 border-b">Breeding</th>
-              <th className="py-2 px-4 border-b">Price</th>
-              <th className="py-2 px-4 border-b">Location</th>
-              <th className="py-2 px-4 border-b">Name</th>
-              <th className="py-2 px-4 border-b">Offspring</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cattleList.map((cattle, index) => (
-              <tr key={index} className="hover:bg-gray-100">
-                <td className="py-2 px-4 border-b">{cattle.animal}</td>
-                <td className="py-2 px-4 border-b">{cattle.breed}</td>
-                <td className="py-2 px-4 border-b">{cattle.gender}</td>
-                <td className="py-2 px-4 border-b">{cattle.age}</td>
-                <td className="py-2 px-4 border-b">{cattle.breeding}</td>
-                <td className="py-2 px-4 border-b">{cattle.price}</td>
-                <td className="py-2 px-4 border-b">{cattle.location}</td>
-                <td className="py-2 px-4 border-b">{cattle.name}</td>
-                <td className="py-2 px-4 border-b">{cattle.offspring}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+  <h2 className="text-xl font-semibold mb-4">Cattle List</h2>
+  <div className="overflow-x-auto"> {/* Add this wrapper for horizontal scrolling */}
+    <table className="min-w-full bg-white border border-gray-300">
+      <thead>
+        <tr>
+          <th className="py-2 px-4 border-b">Animal</th>
+          <th className="py-2 px-4 border-b">Breed</th>
+          <th className="py-2 px-4 border-b">Gender</th>
+          <th className="py-2 px-4 border-b">Age</th>
+          <th className="py-2 px-4 border-b">Breeding</th>
+          <th className="py-2 px-4 border-b">Price</th>
+          <th className="py-2 px-4 border-b">Location</th>
+          <th className="py-2 px-4 border-b">Name</th>
+          <th className="py-2 px-4 border-b">Offspring</th>
+        </tr>
+      </thead>
+      <tbody>
+        {cattleList.map((cattle, index) => (
+          <tr key={index} className="hover:bg-gray-100">
+            <td className="py-2 px-4 border-b">{cattle.animal}</td>
+            <td className="py-2 px-4 border-b">{cattle.breed}</td>
+            <td className="py-2 px-4 border-b">{cattle.gender}</td>
+            <td className="py-2 px-4 border-b">{cattle.age}</td>
+            <td className="py-2 px-4 border-b">{cattle.breeding}</td>
+            <td className="py-2 px-4 border-b">{cattle.price}</td>
+            <td className="py-2 px-4 border-b">{cattle.location}</td>
+            <td className="py-2 px-4 border-b">{cattle.name}</td>
+            <td className="py-2 px-4 border-b">{cattle.offspring}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+
     </div>
   );
 };

@@ -73,13 +73,13 @@ const Store = () => {
     <div className='flex flex-col items-center bg-gray-200 h-lvh p-6'>
       <button 
         onClick={() => setIsModalOpen(true)} 
-        className="mb-4 text-xl bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700 transition duration-300"
+        className="mb-4 text-xl bg-black text-white p-2 rounded-lg hover:bg-gray-300 hover:text-black transition duration-300"
       >
         Add Store
       </button>
 
    {/* Store Table */}
-<table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+<table className="w-3/4 bg-white shadow-md rounded-lg overflow-hidden">
   <thead>
     <tr className="bg-gray-800 text-white">
       <th className="py-3 px-6 text-left">Store ID</th>
@@ -104,7 +104,7 @@ const Store = () => {
           <div className='relative bg-white p-6 rounded-lg shadow-lg w-full max-w-lg overflow-auto max-h-[80vh]'>
             <button 
               onClick={() => setIsModalOpen(false)} 
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+              className="absolute top-2 right-2 text-red-500 text-3xl font-bold hover:text-gray-900"
             >
               &times; {/* Close icon */}
             </button>
