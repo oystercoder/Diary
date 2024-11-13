@@ -9,6 +9,7 @@ const Stock = () => {
   const [transactionType, setTransactionType] = useState("purchase");
   const [entries, setEntries] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
   const handleQuantityChange = (e) => {
     const qty = e.target.value;
@@ -39,7 +40,7 @@ const Stock = () => {
     };
 
     try {
-      const response = await fetch("http://localhost3001/stock", {
+      const response = await fetch(`${apiUrl}/stock`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,7 +65,7 @@ const Stock = () => {
   // Function to fetch all transaction entries
   const fetchEntries = async () => {
     try {
-      const response = await fetch("http://localhost:3001/stock");
+      const response = await fetch(`${apiUrl}/stock`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -222,6 +223,7 @@ const Stock = () => {
         {/* Purchase Transactions Table */}
         <div className="w-full md:w-1/2 bg-white shadow-md rounded-lg overflow-hidden">
   <h2 className="text-xl font-semibold mb-4 p-3">Purchase Transactions</h2>
+  
   <table className="min-w-full border-collapse border border-gray-200">
     <thead>
       <tr>

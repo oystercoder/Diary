@@ -11,6 +11,7 @@ const Wholesale = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState('');
 
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -19,7 +20,7 @@ const Wholesale = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/wholesale', {
+      const response = await fetch(`${apiUrl}/wholesale`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +45,7 @@ const Wholesale = () => {
 
   const fetchWholesalers = async () => {
     try {
-      const response = await fetch('http://localhost:3001/wholesale');
+      const response = await fetch(`${apiUrl}/wholesale`);
       if (!response.ok) throw new Error('Failed to fetch wholesalers');
       const data = await response.json();
       setWholesalers(data);

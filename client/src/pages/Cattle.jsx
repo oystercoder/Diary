@@ -16,10 +16,12 @@ const Cattle = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
   const [cattleList, setCattleList] = useState([]); // State to hold the list of cattle
 
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'; // Default to localhost if no API URL is set
+
   useEffect(() => {
     const fetchCattle = async () => {
       try {
-        const response = await fetch('http://localhost:3001/cattle'); // Adjust the URL as necessary
+        const response = await fetch(`${apiUrl}/cattle`); // Using dynamic API URL
         if (response.ok) {
           const data = await response.json();
           setCattleList(data); // Update cattle list state
@@ -32,7 +34,7 @@ const Cattle = () => {
     };
 
     fetchCattle(); // Fetch cattle data when component mounts
-  }, []);
+  }, [apiUrl]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,7 +48,7 @@ const Cattle = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3001/cattle', {
+      const response = await fetch(`${apiUrl}/cattle`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +82,7 @@ const Cattle = () => {
   };
 
   return (
-    <div className='flex flex-col items-center bg-gray-200 p-6 h-lvh'>
+    <div className="flex flex-col items-center bg-gray-200 p-6 h-lvh">
       {/* Header Section */}
       <div className="w-3/4 flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Cattle List</h1>
@@ -95,18 +97,18 @@ const Cattle = () => {
       {/* Modal for Cattle Entry Form */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className='relative bg-white p-6 rounded-lg shadow-md w-full max-w-lg overflow-auto max-h-[80vh]'>
+          <div className="relative bg-white p-6 rounded-lg shadow-md w-full max-w-lg overflow-auto max-h-[80vh]">
             <button 
               onClick={() => setIsModalOpen(false)} 
               className="absolute top-2 right-2 text-red-500 text-3xl font-bold hover:text-gray-900"
             >
               &times; {/* Close icon */}
             </button>
-            <h2 className='text-xl font-semibold mb-4'>Add Cattle Entry</h2>
+            <h2 className="text-xl font-semibold mb-4">Add Cattle Entry</h2>
             <form onSubmit={handleSubmit}>
 
               {/* Animal Select */}
-              <div className='mb-4 flex flex-col gap-2'>
+              <div className="mb-4 flex flex-col gap-2">
                 <label htmlFor="animal" className="block text-sm font-medium text-gray-900">Animal:</label>
                 <select
                   name="animal"
@@ -132,7 +134,7 @@ const Cattle = () => {
                   name="breed"
                   value={formData.breed}
                   onChange={handleChange}
-                  className='border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500'
+                  className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -171,7 +173,7 @@ const Cattle = () => {
                   name="age"
                   value={formData.age}
                   onChange={handleChange}
-                  className='border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500'
+                  className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -183,7 +185,7 @@ const Cattle = () => {
                   name="breeding"
                   value={formData.breeding}
                   onChange={handleChange}
-                  className='border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500'
+                  className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -195,8 +197,8 @@ const Cattle = () => {
                   name="price"
                   value={formData.price}
                   onChange={handleChange}
-                  className='border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500'
-                  placeholder='₹'
+                  className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="₹"
                 />
               </div>
 
@@ -208,7 +210,7 @@ const Cattle = () => {
                   name="location"
                   value={formData.location}
                   onChange={handleChange}
-                  className='border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500'
+                  className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -220,7 +222,7 @@ const Cattle = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className='border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500'
+                  className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -232,7 +234,7 @@ const Cattle = () => {
                   name="offspring"
                   value={formData.offspring}
                   onChange={handleChange}
-                  className='border  border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500'
+                  className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -251,41 +253,39 @@ const Cattle = () => {
       )}
 
       {/* Cattle List Table */}
-      <div className="mt-6  ml-5 mr-5 w-full bg-white rounded-lg shadow-md p-4">
-        
-      <div className="overflow-x-auto">
-  <table className="min-w-full bg-white border border-gray-300">
-    <thead>
-      <tr>
-        <th className="py-2 px-4 border-b text-left">Animal</th>
-        <th className="py-2 px-4 border-b text-left">Breed</th>
-        <th className="py-2 px-4 border-b text-left">Gender</th>
-        <th className="py-2 px-4 border-b text-center">Age</th>
-        <th className="py-2 px-4 border-b text-left">Breeding</th>
-        <th className="py-2 px-4 border-b text-right">Price</th>
-        <th className="py-2 px-4 border-b text-left">Location</th>
-        <th className="py-2 px-4 border-b text-left">Name</th>
-        <th className="py-2 px-4 border-b text-center">Offspring</th>
-      </tr>
-    </thead>
-    <tbody>
-      {cattleList.map((cattle, index) => (
-        <tr key={index} className="hover:bg-gray-100">
-          <td className="py-2 px-4 border-b text-left">{cattle.animal}</td>
-          <td className="py-2 px-4 border-b text-left">{cattle.breed}</td>
-          <td className="py-2 px-4 border-b text-left">{cattle.gender}</td>
-          <td className="py-2 px-4 border-b text-center">{cattle.age}</td>
-          <td className="py-2 px-4 border-b text-left">{cattle.breeding}</td>
-          <td className="py-2 px-4 border-b text-right">{cattle.price}</td>
-          <td className="py-2 px-4 border-b text-left">{cattle.location}</td>
-          <td className="py-2 px-4 border-b text-left">{cattle.name}</td>
-          <td className="py-2 px-4 border-b text-center">{cattle.offspring}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-
+      <div className="mt-6 ml-5 mr-5 w-full bg-white rounded-lg shadow-md p-4">
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-300">
+            <thead>
+              <tr>
+                <th className="py-2 px-4 border-b text-left">Animal</th>
+                <th className="py-2 px-4 border-b text-left">Breed</th>
+                <th className="py-2 px-4 border-b text-left">Gender</th>
+                <th className="py-2 px-4 border-b text-center">Age</th>
+                <th className="py-2 px-4 border-b text-left">Breeding</th>
+                <th className="py-2 px-4 border-b text-right">Price</th>
+                <th className="py-2 px-4 border-b text-left">Location</th>
+                <th className="py-2 px-4 border-b text-left">Name</th>
+                <th className="py-2 px-4 border-b text-center">Offspring</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cattleList.map((cattle, index) => (
+                <tr key={index} className="hover:bg-gray-100">
+                  <td className="py-2 px-4 border-b text-left">{cattle.animal}</td>
+                  <td className="py-2 px-4 border-b text-left">{cattle.breed}</td>
+                  <td className="py-2 px-4 border-b text-left">{cattle.gender}</td>
+                  <td className="py-2 px-4 border-b text-center">{cattle.age}</td>
+                  <td className="py-2 px-4 border-b text-left">{cattle.breeding}</td>
+                  <td className="py-2 px-4 border-b text-right">{cattle.price}</td>
+                  <td className="py-2 px-4 border-b text-left">{cattle.location}</td>
+                  <td className="py-2 px-4 border-b text-left">{cattle.name}</td>
+                  <td className="py-2 px-4 border-b text-center">{cattle.offspring}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

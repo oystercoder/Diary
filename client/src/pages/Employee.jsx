@@ -22,6 +22,7 @@ const Employee = () => {
   const toggleForm = () => {
     setShowForm(!showForm);
   };
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,7 +39,7 @@ const Employee = () => {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:3001/employees", formData);
+      const response = await axios.post(`${apiUrl}:/employees`, formData);
 
       if (response.status === 201) {
         fetchEmployees();  // Fetch updated employee list
@@ -56,7 +57,7 @@ const Employee = () => {
   const fetchEmployees = async () => {
     setLoadingEmployees(true);
     try {
-      const response = await axios.get("http://localhost:3001/employees");
+      const response = await axios.get(`${apiUrl}/employees`);
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -100,7 +101,7 @@ const Employee = () => {
     try {
       // Update the employee's password in the employee database (keep email unchanged)
       const employeeResponse = await axios.put(
-        `http://localhost:3001/employees/${currentEmployee._id}`,
+        `${apiUrl}/employees/${currentEmployee._id}`,
         updatedEmployee
       );
   
@@ -136,7 +137,7 @@ const Employee = () => {
 
     try {
       // Add credentials to the Authentication Database
-      const response = await axios.post("http://localhost:3001/auth/register", newCredentials);
+      const response = await axios.post(`${apiUrl}/auth/register`, newCredentials);
 
       if (response.status === 200) {
         // Update the Employee Database with the new credentials
@@ -144,7 +145,7 @@ const Employee = () => {
 
         // Sending the updated employee data to the employee API
         const employeeUpdateResponse = await axios.put(
-          `http://localhost:3001/employees/${currentEmployee._id}`,
+          `${apiUrl}/employees/${currentEmployee._id}`,
           updatedEmployee
         );
 

@@ -6,7 +6,8 @@ const Store = () => {
   const [storeName, setStoreName] = useState('');
   const [error, setError] = useState('');
   const [stores, setStores] = useState([]); // State to hold fetched stores
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";// State for modal visibility
 
   const handleLocationChange = (e) => {
     const loc = e.target.value;
@@ -24,7 +25,7 @@ const Store = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/stores', {
+      const response = await fetch(`${apiUrl}/stores`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -54,12 +55,12 @@ const Store = () => {
 
   const fetchStores = async () => {
     try {
-      const response = await fetch('http://localhost:3001/stores');
+      const response = await fetch(`${apiUrl}/stores`);
       if (!response.ok) {
         throw new Error('Failed to fetch stores');
       }
       const data = await response.json();
-      
+
       setStores(data);
     } catch (error) {
       setError(error.message);

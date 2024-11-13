@@ -11,7 +11,9 @@ const Login = () => {
     const [_, setCookie] = useCookies(['access_token']);
 
     const run = async (e) => {
-        e.preventDefault(); // Prevent the default form submission behavior
+        e.preventDefault();
+        
+ // Prevent the default form submission behavior
 
         // Basic client-side validation
         if (!email || !password) {
@@ -20,9 +22,13 @@ const Login = () => {
         }
 
         try {
-            const res = await axios.post('http://localhost:3001/auth/login', {
+            // Correctly reference environment variable
+            const apiUrl = import.meta.env.VITE_API_URL;
+            console.log(apiUrl); // Log API URL for debugging
+
+            const res = await axios.post(`${apiUrl}/auth/login`, {
                 email,
-                password // Removed `status` as it wasn't defined in your code
+                password, // Removed `status` as it wasn't defined in your code
             });
 
             // Log response status for debugging

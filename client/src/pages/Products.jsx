@@ -13,6 +13,8 @@ const Products = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
+  
 
   useEffect(() => {
     fetchProducts();
@@ -20,7 +22,7 @@ const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:3001/products');
+      const response = await fetch(`${apiUrl}/products`);
       const data = await response.json();
       setProducts(data);
     } catch (error) {
@@ -60,7 +62,7 @@ const Products = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:3001/products', {
+      const response = await fetch(`http://{apiUrl}/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +103,7 @@ const Products = () => {
   const handleDelete = async (productId) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        const response = await fetch(`http://localhost:3001/products/${productId}`, {
+        const response = await fetch(`{apiUrl}/products/${productId}`, {
           method: 'DELETE',
         });
 
