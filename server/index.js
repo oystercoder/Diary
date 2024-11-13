@@ -1,16 +1,19 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import fileUpload from 'express-fileupload';
+import https from 'https'; // Using import here
 import { userRouter } from './routes/users.js';
 import { diaryRouter } from './routes/Diary.js';
 import { employeeRouter } from './routes/Employee.js';
-import fileUpload from 'express-fileupload';
 import { storeRouter } from './routes/Store.js';
 import { cattleRouter } from './routes/Cattle.js';
 import { productRouter } from './routes/Products.js';
 import { wholesaleRouter } from './routes/Wholesale.js';
 import { stockRouter } from './routes/stockRouter.js';
 
+// Your SSL certificate files (for HTTPS)
+import fs from 'fs';
 const app = express();
 
 // CORS configuration
