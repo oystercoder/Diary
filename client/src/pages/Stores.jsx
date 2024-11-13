@@ -59,6 +59,7 @@ const Store = () => {
         throw new Error('Failed to fetch stores');
       }
       const data = await response.json();
+      
       setStores(data);
     } catch (error) {
       setError(error.message);
@@ -83,7 +84,7 @@ const Store = () => {
       </div>
 
       {/* Store Table */}
-      <table className="w-3/4 bg-white shadow-md rounded-lg border border-gray-300 overflow-hidden">
+      <table className="w-full ml-5 mr-5 bg-white shadow-md rounded-lg border border-gray-300 overflow-hidden">
         <thead>
           <tr className=" text-black border border-b-2">
             <th className="py-3 px-6 text-left">Store ID</th>
@@ -118,7 +119,7 @@ const Store = () => {
               {error && <div className="text-red-500 mb-2">{error}</div>}
 
               {/* Store Name Input */}
-              <div className="mb-4">
+              <div className="mb-4 flex flex-col gap-1">
                 <label className="block text-sm font-medium text-gray-900 mb-2">Store Name:</label>
                 <input 
                   type="text" 
@@ -131,7 +132,7 @@ const Store = () => {
               </div>
 
               {/* Location Input */}
-              <div className="mb-4">
+              <div className="mb-4 flex flex-col gap-1">
                 <label className="block text-sm font-medium text-gray-900 mb-2">Location:</label>
                 <input 
                   type="text" 
@@ -144,7 +145,7 @@ const Store = () => {
               </div>
 
               {/* Store ID Display */}
-              <div className="mb-4">
+              <div className="mb-4 flex flex-col gap-1">
                 <label className="block text-sm font-medium text-gray-900 mb-2">Store ID:</label>
                 <input 
                   type="text" 

@@ -1,37 +1,42 @@
-
-import React, { useState } from "react"; // Import React and useState
+import React, { useState } from "react"; 
 import { Sidebar } from "flowbite-react";
 import { HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser, HiViewBoards, HiMenu } from "react-icons/hi";
 import { useCookies } from 'react-cookie';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import Diary from './Diary'; // Your diary component
-import Cattle from './Cattle'; // Your cattle component
+import { useNavigate } from 'react-router-dom';
+import Diary from './Diary'; 
+import Cattle from './Cattle'; 
 import Dashboard from "./Dashboard";
 import Employee from "./Employee";
 import Wholesale from "./Wholesale";
 import Products from "./Products";
 import Stores from "./Stores";
 import useAuth from './Auth.jsx';
+import Stock from "./Stock.jsx";
+
 
 export default function Home() {
   const [activeComponent, setActiveComponent] = useState('dashboard');
-  const [, , removeCookie] = useCookies(["access_token"]); // Use cookies
-  const navigate = useNavigate(); // Initialize navigate
+  const [, , removeCookie] = useCookies(["access_token"]); 
+  const navigate = useNavigate(); 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
-  useAuth();// State for dropdown menu
+  useAuth();
 
   const onSidebarClick = (component) => {
     setActiveComponent(component);
-    setIsDropdownOpen(false); // Close dropdown when navigating
+    setIsDropdownOpen(false); 
   };
 
   const handleLogout = () => {
-    removeCookie("access_token"); // Remove the access token cookie
-    navigate("/"); // Navigate to the login page
+    removeCookie("access_token");
+    navigate("/"); 
   };
 
   const toggleDropdown = () => {
-    setIsDropdownOpen(prev => !prev); // Toggle dropdown menu
+    setIsDropdownOpen(prev => !prev);
+  };
+
+  const getItemClass = (component) => {
+    return activeComponent === component ? 'text-black bg-gray-300' : 'text-white hover:bg-gray-700';
   };
 
   return (
@@ -50,45 +55,48 @@ export default function Home() {
 
         {/* Dropdown Menu for small screens */}
         {isDropdownOpen && (
-          <div className="absolute left-0 right-0 top-16 md:hidden bg-black z-20 flex flex-col items-center">
-            <div className="flex flex-col ml-3 gap-2 items-center">
-              <div onClick={() => onSidebarClick('dashboard')} className="text-white p-2 cursor-pointer">Dashboard</div>
-              <div onClick={() => onSidebarClick('diary')} className="text-white p-2 cursor-pointer">Diary</div>
-              <div onClick={() => onSidebarClick('cattle')} className="text-white p-2 cursor-pointer">Cattle</div>
-              <div onClick={() => onSidebarClick('stores')} className="text-white p-2 cursor-pointer">Stores</div>
-              <div onClick={() => onSidebarClick('products')} className="text-white p-2 cursor-pointer">Products</div>
-              <div onClick={() => onSidebarClick('employee')} className="text-white p-2 cursor-pointer">Employee</div>
-              <div onClick={() => onSidebarClick('wholesale')} className="text-white p-2 cursor-pointer">Wholesale</div>
+          <div className="absolute left-0 right-0 top-16 md:hidden bg-black z-20 flex flex-col items-start">
+            <div className="flex flex-col ml-3 gap-2 items-start">
+              <div onClick={() => onSidebarClick('dashboard')} className={`p-2 cursor-pointer ${getItemClass('dashboard')}`}>Dashboard</div>
+              <div onClick={() => onSidebarClick('diary')} className={`p-2 cursor-pointer ${getItemClass('diary')}`}>Diary</div>
+              <div onClick={() => onSidebarClick('cattle')} className={`p-2 cursor-pointer ${getItemClass('cattle')}`}>Cattle</div>
+              <div onClick={() => onSidebarClick('stores')} className={`p-2 cursor-pointer ${getItemClass('stores')}`}>Stores</div>
+              <div onClick={() => onSidebarClick('products')} className={`p-2 cursor-pointer ${getItemClass('products')}`}>Products</div>
+              <div onClick={() => onSidebarClick('employee')} className={`p-2 cursor-pointer ${getItemClass('employee')}`}>Employee</div>
+              <div onClick={() => onSidebarClick('wholesale')} className={`p-2 cursor-pointer ${getItemClass('wholesale')}`}>Wholesale</div>
               <div onClick={handleLogout} className="text-white p-2 cursor-pointer">Logout</div>
             </div>
           </div>
         )}
 
         <div className="flex flex-row">
-          <div className="hidden md:flex top-0 left-0 w-1/3 md:w-1/6 md:min-h-screen md:bg-black z-10 bg-gray-100">
+          <div className="hidden md:flex top-0 left-0 w-1/4 lg:w-1/6 md:min-h-screen md:bg-black z-10 bg-gray-100">
             <Sidebar aria-label="Default sidebar example">
               <Sidebar.Items>
-                <Sidebar.ItemGroup className="flex flex-col ml-3 gap-8 md:ml-10 items-center">
-                  <Sidebar.Item onClick={() => onSidebarClick('dashboard')} icon={HiChartPie} className="mt-8 text-white hover:text-black">
+                <Sidebar.ItemGroup className="flex flex-col ml-3 gap-5 md:ml-10 items-start">
+                  <Sidebar.Item onClick={() => onSidebarClick('dashboard')} icon={HiChartPie} className={`mt-8 gap-3 ${getItemClass('dashboard')}`}>
                     Dashboard
                   </Sidebar.Item>
-                  <Sidebar.Item onClick={() => onSidebarClick('diary')} icon={HiViewBoards} className='text-white hover:text-black'>
+                  <Sidebar.Item onClick={() => onSidebarClick('diary')} icon={HiViewBoards} className={`gap-3 ${getItemClass('diary')}`}>
                     Diary
                   </Sidebar.Item>
-                  <Sidebar.Item onClick={() => onSidebarClick('cattle')} icon={HiInbox} className='text-white hover:text-black'>
+                  <Sidebar.Item onClick={() => onSidebarClick('cattle')} icon={HiInbox} className={`gap-3 ${getItemClass('cattle')}`}>
                     Cattle
                   </Sidebar.Item>
-                  <Sidebar.Item onClick={() => onSidebarClick('stores')} icon={HiUser} className='text-white hover:text-black'>
+                  <Sidebar.Item onClick={() => onSidebarClick('stores')} icon={HiUser} className={`gap-3 ${getItemClass('stores')}`}>
                     Stores
                   </Sidebar.Item>
-                  <Sidebar.Item onClick={() => onSidebarClick('products')} icon={HiShoppingBag} className='text-white hover:text-black'>
+                  <Sidebar.Item onClick={() => onSidebarClick('products')} icon={HiShoppingBag} className={`gap-3 ${getItemClass('products')}`}>
                     Products
                   </Sidebar.Item>
-                  <Sidebar.Item onClick={() => onSidebarClick('employee')} icon={HiArrowSmRight} className='text-white hover:text-black'>
+                  <Sidebar.Item onClick={() => onSidebarClick('employee')} icon={HiArrowSmRight} className={`gap-3 ${getItemClass('employee')}`}>
                     Employee
                   </Sidebar.Item>
-                  <Sidebar.Item onClick={() => onSidebarClick('wholesale')} icon={HiTable} className='text-white hover:text-black'>
+                  <Sidebar.Item onClick={() => onSidebarClick('wholesale')} icon={HiTable} className={`gap-3 ${getItemClass('wholesale')}`}>
                     Wholesale
+                  </Sidebar.Item>
+                  <Sidebar.Item onClick={() => onSidebarClick('stock')} icon={HiTable} className={`gap-3 ${getItemClass('stock')}`}>
+                    Stock
                   </Sidebar.Item>
                 </Sidebar.ItemGroup>
               </Sidebar.Items>
@@ -103,6 +111,7 @@ export default function Home() {
             {activeComponent === 'wholesale' && <Wholesale />}
             {activeComponent === 'products' && <Products />}
             {activeComponent === 'stores' && <Stores />}
+            {activeComponent === 'stock' && <Stock />}
           </div>
         </div>
       </div>

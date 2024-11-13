@@ -106,7 +106,7 @@ const Cattle = () => {
             <form onSubmit={handleSubmit}>
 
               {/* Animal Select */}
-              <div className='mb-4'>
+              <div className='mb-4 flex flex-col gap-2'>
                 <label htmlFor="animal" className="block text-sm font-medium text-gray-900">Animal:</label>
                 <select
                   name="animal"
@@ -125,7 +125,7 @@ const Cattle = () => {
               </div>
 
               {/* Breed Input */}
-              <div className="mb-4">
+              <div className="mb-4 flex flex-col gap-2">
                 <label className="block text-sm font-medium text-gray-900">Breed:</label>
                 <input
                   type="text"
@@ -137,7 +137,7 @@ const Cattle = () => {
               </div>
 
               {/* Gender Radio Buttons */}
-              <div className="mb-4">
+              <div className="mb-4 flex flex-col gap-2">
                 <label className="block text-sm font-medium text-gray-900">Gender:</label>
                 <div className="flex items-center">
                   <label className="flex items-center mr-4">
@@ -164,7 +164,7 @@ const Cattle = () => {
               </div>
 
               {/* Age Input */}
-              <div className="mb-4">
+              <div className="mb-4 flex flex-col gap-2">
                 <label className="block text-sm font-medium text-gray-900">Age:</label>
                 <input
                   type="number"
@@ -176,7 +176,7 @@ const Cattle = () => {
               </div>
 
               {/* Breeding Input */}
-              <div className="mb-4">
+              <div className="mb-4 flex flex-col gap-2">
                 <label className="block text-sm font-medium text-gray-900">Breeding:</label>
                 <input
                   type="number"
@@ -188,7 +188,7 @@ const Cattle = () => {
               </div>
 
               {/* Price Input */}
-              <div className="mb-4">
+              <div className="mb-4 flex flex-col gap-2">
                 <label className="block text-sm font-medium text-gray-900">Price:</label>
                 <input
                   type="number"
@@ -201,7 +201,7 @@ const Cattle = () => {
               </div>
 
               {/* Location Input */}
-              <div className="mb-4">
+              <div className="mb-4 flex flex-col gap-2">
                 <label className="block text-sm font-medium text-gray-900">Location:</label>
                 <input
                   type="text"
@@ -213,7 +213,7 @@ const Cattle = () => {
               </div>
 
               {/* Name Input */}
-              <div className="mb-4">
+              <div className="mb-4 flex flex-col gap-2">
                 <label className="block text-sm font-medium text-gray-900">Name:</label>
                 <input
                   type="text"
@@ -225,19 +225,19 @@ const Cattle = () => {
               </div>
 
               {/* Offspring Input */}
-              <div className="mb-4">
+              <div className="mb-4 flex flex-col gap-2">
                 <label className="block text-sm font-medium text-gray-900">Offspring:</label>
                 <input
                   type="text"
                   name="offspring"
                   value={formData.offspring}
                   onChange={handleChange}
-                  className='border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500'
+                  className='border  border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500'
                 />
               </div>
 
               {/* Submit Button */}
-              <div className="flex items-center justify-center">
+              <div className="items-center justify-center flex flex-col gap-2">
                 <button
                   type="submit"
                   className="w-full max-w-xs mt-4 text-2xl bg-black text-white p-2 rounded-lg hover:bg-gray-800 transition duration-300"
@@ -251,40 +251,41 @@ const Cattle = () => {
       )}
 
       {/* Cattle List Table */}
-      <div className="mt-6 w-full max-w-4xl bg-white rounded-lg shadow-md p-4">
-        <h2 className="text-xl font-semibold mb-4">Cattle List</h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-300">
-            <thead>
-              <tr>
-                <th className="py-2 px-4 border-b">Animal</th>
-                <th className="py-2 px-4 border-b">Breed</th>
-                <th className="py-2 px-4 border-b">Gender</th>
-                <th className="py-2 px-4 border-b">Age</th>
-                <th className="py-2 px-4 border-b">Breeding</th>
-                <th className="py-2 px-4 border-b">Price</th>
-                <th className="py-2 px-4 border-b">Location</th>
-                <th className="py-2 px-4 border-b">Name</th>
-                <th className="py-2 px-4 border-b">Offspring</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cattleList.map((cattle, index) => (
-                <tr key={index} className="hover:bg-gray-100">
-                  <td className="py-2 px-4 border-b">{cattle.animal}</td>
-                  <td className="py-2 px-4 border-b">{cattle.breed}</td>
-                  <td className="py-2 px-4 border-b">{cattle.gender}</td>
-                  <td className="py-2 px-4 border-b">{cattle.age}</td>
-                  <td className="py-2 px-4 border-b">{cattle.breeding}</td>
-                  <td className="py-2 px-4 border-b">{cattle.price}</td>
-                  <td className="py-2 px-4 border-b">{cattle.location}</td>
-                  <td className="py-2 px-4 border-b">{cattle.name}</td>
-                  <td className="py-2 px-4 border-b">{cattle.offspring}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      <div className="mt-6  ml-5 mr-5 w-full bg-white rounded-lg shadow-md p-4">
+        
+      <div className="overflow-x-auto">
+  <table className="min-w-full bg-white border border-gray-300">
+    <thead>
+      <tr>
+        <th className="py-2 px-4 border-b text-left">Animal</th>
+        <th className="py-2 px-4 border-b text-left">Breed</th>
+        <th className="py-2 px-4 border-b text-left">Gender</th>
+        <th className="py-2 px-4 border-b text-center">Age</th>
+        <th className="py-2 px-4 border-b text-left">Breeding</th>
+        <th className="py-2 px-4 border-b text-right">Price</th>
+        <th className="py-2 px-4 border-b text-left">Location</th>
+        <th className="py-2 px-4 border-b text-left">Name</th>
+        <th className="py-2 px-4 border-b text-center">Offspring</th>
+      </tr>
+    </thead>
+    <tbody>
+      {cattleList.map((cattle, index) => (
+        <tr key={index} className="hover:bg-gray-100">
+          <td className="py-2 px-4 border-b text-left">{cattle.animal}</td>
+          <td className="py-2 px-4 border-b text-left">{cattle.breed}</td>
+          <td className="py-2 px-4 border-b text-left">{cattle.gender}</td>
+          <td className="py-2 px-4 border-b text-center">{cattle.age}</td>
+          <td className="py-2 px-4 border-b text-left">{cattle.breeding}</td>
+          <td className="py-2 px-4 border-b text-right">{cattle.price}</td>
+          <td className="py-2 px-4 border-b text-left">{cattle.location}</td>
+          <td className="py-2 px-4 border-b text-left">{cattle.name}</td>
+          <td className="py-2 px-4 border-b text-center">{cattle.offspring}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
       </div>
     </div>
   );

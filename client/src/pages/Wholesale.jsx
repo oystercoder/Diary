@@ -64,9 +64,9 @@ const Wholesale = () => {
         <h1 className="text-2xl font-bold">Wholesale Entries</h1>
         <button 
           onClick={() => setIsModalOpen(true)} 
-          className="text-xl bg-black text-white p-2 rounded-lg hover:bg-gray-800 transition duration-300"
+          className=" md:text-xl bg-black text-white sm:p-1 md:p-2 rounded-lg hover:bg-gray-800 transition duration-300"
         >
-          Add Wholesale Entry
+          Add Entry
         </button>
       </div>
 
@@ -85,7 +85,7 @@ const Wholesale = () => {
             {error && <div className="text-red-500 mb-4">{error}</div>}
 
             {/* Name Input */}
-            <div className="mb-4">
+            <div className="mb-4 flex flex-col gap-1">
               <label className="block text-sm font-medium text-gray-900">Name:</label>
               <input 
                 type="text" 
@@ -99,7 +99,7 @@ const Wholesale = () => {
             </div>
 
             {/* Contact Number Input */}
-            <div className="mb-4">
+            <div className="mb-4 flex flex-col gap-1">
               <label className="block text-sm font-medium text-gray-900">Contact Number:</label>
               <input 
                 type="text" 
@@ -113,7 +113,7 @@ const Wholesale = () => {
             </div>
 
             {/* Location Input */}
-            <div className="mb-4">
+            <div className="mb-4 flex flex-col gap-1">
               <label className="block text-sm font-medium text-gray-900">Location:</label>
               <input 
                 type="text" 
@@ -140,7 +140,7 @@ const Wholesale = () => {
       )}
 
       {/* Wholesalers Table */}
-      <div className="overflow-x-auto mt-6 w-3/4">
+      <div className="overflow-x-auto mt-6 w-full ml-5 mr-5">
         <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
           <thead>
             <tr className="border border-2">

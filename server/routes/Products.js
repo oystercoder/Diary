@@ -8,7 +8,7 @@ router.post('/', async (req, res) => {
   const { name, units, price } = req.body;
 
   // Validate the request body
-  if (!name || typeof units !== 'number' || typeof price !== 'number') {
+  if (!name  || typeof price !== 'number') {
     return res.status(400).json({ message: 'Invalid input data' });
   }
 
