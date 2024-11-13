@@ -86,9 +86,9 @@ const Stock = () => {
   const saleEntries = entries.filter(entry => entry.type === 'sale');
 
   return (
-    <div className="flex flex-col items-center bg-gray-200 p-6 h-screen">
+    <div className="flex flex-col items-center bg-gray-200 p-6 min-h-screen">
       {/* Header Section */}
-      <div className="flex justify-between w-3/4 mb-4">
+      <div className="flex justify-between w-full md:w-3/4 mb-4">
         <h1 className="text-2xl font-bold">Stock Transactions</h1>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -114,9 +114,7 @@ const Stock = () => {
             <form onSubmit={handleSubmit}>
               {/* Dealer Name */}
               <div className="mb-6 flex flex-col gap-2">
-                <label className="block text-sm font-medium text-gray-900">
-                  Dealer Name:
-                </label>
+                <label className="block text-sm font-medium text-gray-900">Dealer Name:</label>
                 <input
                   type="text"
                   value={dealerName}
@@ -129,9 +127,7 @@ const Stock = () => {
 
               {/* Product Name */}
               <div className="mb-6 flex flex-col gap-2">
-                <label className="block text-sm font-medium text-gray-900">
-                  Product Name:
-                </label>
+                <label className="block text-sm font-medium text-gray-900">Product Name:</label>
                 <input
                   type="text"
                   value={productName}
@@ -144,9 +140,7 @@ const Stock = () => {
 
               {/* Quantity */}
               <div className="mb-6 flex flex-col gap-2">
-                <label className="block text-sm font-medium text-gray-900">
-                  Quantity:
-                </label>
+                <label className="block text-sm font-medium text-gray-900">Quantity:</label>
                 <input
                   type="number"
                   value={quantity}
@@ -159,9 +153,7 @@ const Stock = () => {
 
               {/* Price per Unit */}
               <div className="mb-6 flex flex-col gap-2">
-                <label className="block text-sm font-medium text-gray-900">
-                  Price per Unit (₹):
-                </label>
+                <label className="block text-sm font-medium text-gray-900">Price per Unit (₹):</label>
                 <input
                   type="number"
                   value={pricePerUnit}
@@ -174,9 +166,7 @@ const Stock = () => {
 
               {/* Total Price */}
               <div className="mb-6 flex flex-col gap-2">
-                <label className="block text-sm font-medium text-gray-900">
-                  Total Price (₹):
-                </label>
+                <label className="block text-sm font-medium text-gray-900">Total Price (₹):</label>
                 <input
                   type="number"
                   value={totalPrice}
@@ -187,9 +177,7 @@ const Stock = () => {
 
               {/* Transaction Type Dropdown */}
               <div className="mb-6 flex flex-col gap-2">
-                <label className="block text-sm font-medium text-gray-900">
-                  Transaction Type:
-                </label>
+                <label className="block text-sm font-medium text-gray-900">Transaction Type:</label>
                 <select
                   value={transactionType}
                   onChange={(e) => setTransactionType(e.target.value)}
@@ -215,82 +203,76 @@ const Stock = () => {
       )}
 
       {/* Display Purchase and Sale Transactions Side by Side */}
-      <div className="mt-4 ml-5 mr-5 w-full flex flex-col  md:flex md:flex-row space-x-6">
-        {/* Purchase Transactions Table */}
-        
-
-        {/* Sale Transactions Table */}
+      <div className="mt-4 w-full flex flex-col md:flex-row md:space-x-6">
         {/* Purchase Transactions Table */}
         <div className="w-full md:w-1/2 bg-white shadow-md rounded-lg overflow-hidden">
-  <h2 className="text-xl font-semibold mb-4 p-3">Purchase Transactions</h2>
-  
-  <table className="min-w-full border-collapse border border-gray-200">
-    <thead>
-      <tr>
-        <th className="border border-gray-300 p-2 text-center">Date</th> {/* New Date Column */}
-        <th className="border border-gray-300 p-2 text-center">Dealer Name</th>
-        <th className="border border-gray-300 p-2 text-center">Product Name</th>
-        <th className="border border-gray-300 p-2 text-center">Quantity</th>
-        <th className="border border-gray-300 p-2 text-center">Price per Unit (₹)</th>
-        <th className="border border-gray-300 p-2 text-center">Total Price (₹)</th>
-      </tr>
-    </thead>
-    <tbody>
-      {purchaseEntries.length > 0 ? (
-        purchaseEntries.map((entry, index) => (
-          <tr key={index}>
-            <td className="border border-gray-300 text-center p-4">{entry.date}</td> {/* Display Date */}
-            <td className="border border-gray-300 text-center p-4">{entry.dealerName}</td>
-            <td className="border border-gray-300 text-center p-4">{entry.productName}</td>
-            <td className="border border-gray-300 text-center p-4">{entry.quantity}</td>
-            <td className="border border-gray-300 text-center p-4">{entry.pricePerUnit}</td>
-            <td className="border border-gray-300 text-center p-4">{entry.totalPrice}</td>
-          </tr>
-        ))
-      ) : (
-        <tr>
-          <td className="border border-gray-300 p-2" colSpan="6">No purchase transactions found</td>
-        </tr>
-      )}
-    </tbody>
-  </table>
-</div>
+          <h2 className="text-xl font-semibold mb-4 p-3">Purchase Transactions</h2>
+          <table className="min-w-full border-collapse border border-gray-200">
+            <thead>
+              <tr>
+                <th className="border border-gray-300 p-2 text-center">Date</th>
+                <th className="border border-gray-300 p-2 text-center">Dealer Name</th>
+                <th className="border border-gray-300 p-2 text-center">Product Name</th>
+                <th className="border border-gray-300 p-2 text-center">Quantity</th>
+                <th className="border border-gray-300 p-2 text-center">Price per Unit (₹)</th>
+                <th className="border border-gray-300 p-2 text-center">Total Price (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {purchaseEntries.length > 0 ? (
+                purchaseEntries.map((entry, index) => (
+                  <tr key={index}>
+                    <td className="border border-gray-300 text-center p-4">{entry.date}</td>
+                    <td className="border border-gray-300 text-center p-4">{entry.dealerName}</td>
+                    <td className="border border-gray-300 text-center p-4">{entry.productName}</td>
+                    <td className="border border-gray-300 text-center p-4">{entry.quantity}</td>
+                    <td className="border border-gray-300 text-center p-4">{entry.pricePerUnit}</td>
+                    <td className="border border-gray-300 text-center p-4">{entry.totalPrice}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td className="border border-gray-300 p-2" colSpan="6">No purchase transactions found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
-{/* Sale Transactions Table */}
-<div className="w-full mt-10 md:mt-0 md:w-1/2 bg-white shadow-md rounded-lg overflow-hidden">
-  <h2 className="text-xl font-semibold mb-4 p-3">Sale Transactions</h2>
-  <table className="min-w-full border-collapse border border-gray-200">
-    <thead>
-      <tr>
-        <th className="border border-gray-300 p-2 text-center">Date</th> {/* New Date Column */}
-        <th className="border border-gray-300 p-2 text-center">Dealer Name</th>
-        <th className="border border-gray-300 p-2 text-center">Product Name</th>
-        <th className="border border-gray-300 p-2 text-center">Quantity</th>
-        <th className="border border-gray-300 p-2 text-center">Price per Unit (₹)</th>
-        <th className="border border-gray-300 p-2 text-center">Total Price (₹)</th>
-      </tr>
-    </thead>
-    <tbody>
-      {saleEntries.length > 0 ? (
-        saleEntries.map((entry, index) => (
-          <tr key={index}>
-            <td className="border border-gray-300 text-center p-4">{entry.date}</td> {/* Display Date */}
-            <td className="border border-gray-300 text-center p-4">{entry.dealerName}</td>
-            <td className="border border-gray-300 text-center p-4">{entry.productName}</td>
-            <td className="border border-gray-300 text-center p-4">{entry.quantity}</td>
-            <td className="border border-gray-300 text-center p-4">{entry.pricePerUnit}</td>
-            <td className="border border-gray-300 text-center p-4">{entry.totalPrice}</td>
-          </tr>
-        ))
-      ) : (
-        <tr>
-          <td className="border border-gray-300 p-2" colSpan="6">No sale transactions found</td>
-        </tr>
-      )}
-    </tbody>
-  </table>
-</div>
-
+        {/* Sale Transactions Table */}
+        <div className="w-full md:w-1/2 mt-10 md:mt-0 bg-white shadow-md rounded-lg overflow-hidden">
+          <h2 className="text-xl font-semibold mb-4 p-3">Sale Transactions</h2>
+          <table className="min-w-full border-collapse border border-gray-200">
+            <thead>
+              <tr>
+                <th className="border border-gray-300 p-2 text-center">Date</th>
+                <th className="border border-gray-300 p-2 text-center">Dealer Name</th>
+                <th className="border border-gray-300 p-2 text-center">Product Name</th>
+                <th className="border border-gray-300 p-2 text-center">Quantity</th>
+                <th className="border border-gray-300 p-2 text-center">Price per Unit (₹)</th>
+                <th className="border border-gray-300 p-2 text-center">Total Price (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {saleEntries.length > 0 ? (
+                saleEntries.map((entry, index) => (
+                  <tr key={index}>
+                    <td className="border border-gray-300 text-center p-4">{entry.date}</td>
+                    <td className="border border-gray-300 text-center p-4">{entry.dealerName}</td>
+                    <td className="border border-gray-300 text-center p-4">{entry.productName}</td>
+                    <td className="border border-gray-300 text-center p-4">{entry.quantity}</td>
+                    <td className="border border-gray-300 text-center p-4">{entry.pricePerUnit}</td>
+                    <td className="border border-gray-300 text-center p-4">{entry.totalPrice}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td className="border border-gray-300 p-2" colSpan="6">No sale transactions found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
