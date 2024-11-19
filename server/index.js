@@ -11,10 +11,21 @@ import { cattleRouter } from './routes/Cattle.js';
 import { productRouter } from './routes/Products.js';
 import { wholesaleRouter } from './routes/Wholesale.js';
 import { stockRouter } from './routes/stockRouter.js';
+import dotenv from 'dotenv';
+
+
+
 
 // Your SSL certificate files (for HTTPS)
 import fs from 'fs';
 const app = express();
+
+dotenv.config({ path: '.env.local' });  // This loads the variables from .env into process.env
+
+const apiUrl = process.env.VITE_PORT;
+console.log(apiUrl)
+const mongoUrl = process.env.MONGO_URL;
+console.log(mongoUrl)
 
 // CORS configuration
 const allowedOrigins = ['http://localhost:5173', 'http://192.168.50.178:5173'];
@@ -52,7 +63,7 @@ app.use('/wholesale', wholesaleRouter);
 app.use('/stock', stockRouter);
 
 // MongoDB connection
-mongoose.connect("mongodb+srv://sushmasriya1jobs:sushma@cluster0.nj3yq.mongodb.net/")
+mongoose.connect(mongoUrl)
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
