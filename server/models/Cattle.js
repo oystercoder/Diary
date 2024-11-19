@@ -8,7 +8,7 @@ const cattleSchema = new mongoose.Schema({
   },
   breed: {
     type: String,
-   
+    required: true,
   },
   gender: {
     type: String,
