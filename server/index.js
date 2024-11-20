@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import fileUpload from 'express-fileupload';
-import https from 'https'; // Using import here
+import https from 'https';  // For HTTPS setup
 import { userRouter } from './routes/users.js';
 import { diaryRouter } from './routes/Diary.js';
 import { employeeRouter } from './routes/Employee.js';
@@ -12,23 +12,21 @@ import { productRouter } from './routes/Products.js';
 import { wholesaleRouter } from './routes/Wholesale.js';
 import { stockRouter } from './routes/stockRouter.js';
 import dotenv from 'dotenv';
-
-
-
-
-// Your SSL certificate files (for HTTPS)
 import fs from 'fs';
+
 const app = express();
 
-dotenv.config({ path: '.env.local' });  // This loads the variables from .env into process.env
+// Load environment variables from .env
+dotenv.config({ path: '.env.local' });
 
-const apiUrl = process.env.VITE_PORT;
-console.log(apiUrl)
+// Fetch the MongoDB URL and set the API URL
+const apiUrl ="http://192.168.50.179:3001"; // Default API URL
+console.log(apiUrl);
 const mongoUrl = process.env.MONGO_URL;
-console.log(mongoUrl)
+console.log(mongoUrl);
 
 // CORS configuration
-const allowedOrigins = ['http://localhost:5173', 'http://192.168.50.178:5173'];
+const allowedOrigins = ['http://localhost:5173', 'http://192.168.50.179:5173'];
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -67,7 +65,23 @@ mongoose.connect(mongoUrl)
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
-// Start the server
-app.listen(3001, () => {
-  console.log('Server is running on port 3001');
-});
+// Configure and start the server
+
+// Check if we need to run HTTPS or HTTP
+if (process.env.NODE_ENV === 'production') {
+  // If you are running in production mode and want to use HTTPS:
+  const httpsOptions = {
+    key: fs.readFileSync('path_to_private_key'),  // Replace with your actual SSL key path
+    cert: fs.readFileSync('path_to_certificate'),  // Replace with your actual SSL cert path
+  };
+
+  // Start HTTPS server on port 3001
+  https.createServer(httpsOptions, app).listen(3001, '0.0.0.0', () => {
+    console.log('HTTPS Server is running on https://192.168.50.179:3001');
+  });
+} else {
+  // If not in production (development), use HTTP
+  app.listen(3001, '0.0.0.0', () => {
+    console.log('Server is running on http://192.168.50.179:3001');
+  });
+}
