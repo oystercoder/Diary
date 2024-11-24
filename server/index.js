@@ -75,13 +75,15 @@ if (process.env.NODE_ENV === 'production') {
   //   cert: fs.readFileSync('path_to_certificate'),  // Replace with your actual SSL cert path
   // };
 
+  const port = process.env.VITE_PORT || 3001;
+
   // Start HTTPS server on port 3001
-  https.createServer( app).listen(3001, '0.0.0.0', () => {
-    console.log('HTTPS Server is running on https://192.168.50.179:3001');
-  });
-} else {
+//   https.createServer(app).listen(port, '0.0.0.0', () => {
+//     console.log('HTTPS Server is running on https://localhost:3001');
+//   });
+// } else {
   // If not in production (development), use HTTP
-  app.listen(3001, '0.0.0.0', () => {
+  app.listen(port, '0.0.0.0', () => {
     console.log('Server is running on http://192.168.50.179:3001');
   });
 }
