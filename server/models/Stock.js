@@ -12,6 +12,11 @@ const stockSchema = new mongoose.Schema(
       type: String,
       required: true,  // Quantity is required
     },
+    unit:{
+      type:String,
+      required:true
+
+    },
     pricePerUnit: {
       type: String,
       required: true,  // Price per unit is required

@@ -1,10 +1,29 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
+import { CiFilter } from "react-icons/ci";
+import { MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 
 const Stock = () => {
   const [dealerName, setDealerName] = useState("");
-  const [selectedDealerName, setSelectedDealerName] = useState(""); 
+  const [selectedDealerName, setSelectedDealerName] = useState("");
+  const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
+  const [selectedFilterDuration, setSelectedFilterDuration] = useState("lastWeek");
+  const [customStartDate, setCustomStartDate] = useState("");
+  const [customEndDate, setCustomEndDate] = useState("");
+  const [purchaseSearch, setPurchaseSearch] = useState(""); // Search term for purchase transactions
+  // Selected filter duration
+   // Custom start date for the filter
+  // Custom end date for the filter
+ 
+  const [purchaseEntries, setPurchaseEntries] = useState([]); // Original data (purchase entries)
+ // Fi
 
+  
+
+ const [filterDuration, setFilterDuration] = useState(""); // Dropdown filter value
+//  const [filteredPurchaseEntries, setFilteredPurchaseEntries] = useState(purchaseEntries); // Filtered data
+ 
   const [productName, setProductName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [pricePerUnit, setPricePerUnit] = useState("");
@@ -14,6 +33,8 @@ const Stock = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [selectedDealerTransactions, setSelectedDealerTransactions] = useState([]);
+ 
+  const [saleSearch, setSaleSearch] = useState("");
   const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
   const handleQuantityChange = (e) => {
@@ -90,17 +111,11 @@ const Stock = () => {
     fetchEntries();
   }, []);
 
-  // Function to handle row click to show all transactions of the dealer
-  const handleRowClick = (dealerName) => {
-    const transactions = entries.filter(
-      (entry) => entry.dealerName === dealerName
-    );
-    setSelectedDealerName(dealerName);
-    setSelectedDealerTransactions(transactions);
-    setOpen(true); // Open modal to show transactions
-  };
-
-  // Group entries by product name
+  
+  const edit=()=>{
+    alert("this is working")
+  }
+  
   const groupedEntries = entries.reduce((acc, entry) => {
     // If the product doesn't exist in the accumulator, initialize it with empty purchases and sales arrays
     if (!acc[entry.productName]) {
@@ -119,7 +134,102 @@ const Stock = () => {
     return acc;
   }, {});
 
-  // Create the cards for each product
+  // Function to handle row click to show all transactions of the dealer
+  const handleRowClick = (dealerName) => {
+    const transactions = entries.filter(
+      (entry) => entry.dealerName === dealerName
+    );
+    setSelectedDealerName(dealerName);
+    setSelectedDealerTransactions(transactions);
+    setOpen(true);
+    console.log(isOpen) // Open modal to show transactions
+  };
+
+  const filterEntries = (entries) => {
+    if (!Array.isArray(entries)) {
+      console.error("filterEntries received non-iterable input:", entries);
+      return []; // Return an empty array as a fallback
+    }
+  
+    let filteredEntries = [...entries];
+  
+    // Your filtering logic remains the same...
+    filteredEntries = filteredEntries.filter(
+      (entry) =>
+        entry.type === "purchase" &&
+        (entry.dealerName.toLowerCase().includes(purchaseSearch.toLowerCase()) ||
+          entry.productName.toLowerCase().includes(purchaseSearch.toLowerCase()))
+    );
+  
+    // Apply duration-based filtering
+    const now = moment();
+  
+    if (selectedFilterDuration === "lastWeek") {
+      const startOfLastWeek = now.clone().subtract(1, "weeks").startOf("week");
+      filteredEntries = filteredEntries.filter((entry) =>
+        moment(entry.timestamp).isBetween(startOfLastWeek, now, "days", "[]")
+      );
+    } else if (selectedFilterDuration === "lastMonth") {
+      const startOfLastMonth = now.clone().subtract(1, "months").startOf("month");
+      filteredEntries = filteredEntries.filter((entry) =>
+        moment(entry.timestamp).isBetween(startOfLastMonth, now, "days", "[]")
+      );
+    } else if (selectedFilterDuration === "lastYear") {
+      const startOfLastYear = now.clone().subtract(1, "years").startOf("year");
+      filteredEntries = filteredEntries.filter((entry) =>
+        moment(entry.timestamp).isBetween(startOfLastYear, now, "days", "[]")
+      );
+    } else if (selectedFilterDuration === "custom" && customStartDate && customEndDate) {
+      const startDate = moment(customStartDate);
+      const endDate = moment(customEndDate);
+      filteredEntries = filteredEntries.filter((entry) =>
+        moment(entry.timestamp).isBetween(startDate, endDate, "days", "[]")
+      );
+    }
+  
+    return filteredEntries;
+  };
+  
+
+
+  // Filtered purchase and sale entries based on search inputs
+  const filteredPurchaseEntries = entries.filter(
+    (entry) =>
+     
+
+
+      entry.type === "purchase" &&  filterEntries(entry) &&
+      (entry.dealerName.toLowerCase().includes(purchaseSearch.toLowerCase()) ||
+        entry.productName.toLowerCase().includes(purchaseSearch.toLowerCase()))
+  );
+  const handleFilterClick = () => {
+    setIsFilterPopupOpen(true);
+  };
+  const handleFilterDurationChange = (duration) => {
+    setSelectedFilterDuration(duration);
+  };
+  
+
+
+  // Function to handle custom date change
+  const handleCustomDateChange = (e) => {
+    if (e.target.name === "startDate") {
+      setCustomStartDate(e.target.value);
+    } else {
+      setCustomEndDate(e.target.value);
+    }
+  };
+
+  // Filter entries based on the selected duration
+
+
+  const filteredSaleEntries = entries.filter(
+    (entry) =>
+      entry.type === "sale" &&
+      (entry.dealerName.toLowerCase().includes(saleSearch.toLowerCase()) ||
+        entry.productName.toLowerCase().includes(saleSearch.toLowerCase()))
+  );
+
   const productCards = Object.keys(groupedEntries).map((productName) => {
     const purchaseEntries = groupedEntries[productName].purchases;
     const saleEntries = groupedEntries[productName].sales;
@@ -169,10 +279,11 @@ const Stock = () => {
     );
   });
 
+
   return (
     <div className="flex flex-col items-center bg-gray-200 p-6 min-h-screen">
       {/* Header Section */}
-      <div className="flex justify-between w-full md:w-3/4 mb-4">
+      <div className="flex justify-between w-full  mb-4">
         <h1 className="text-2xl font-bold">Stock Transactions</h1>
         <button
           onClick={handleTransactionButtonClick}
@@ -182,15 +293,80 @@ const Stock = () => {
         </button>
       </div>
 
-      {/* Product Cards */}
       <div className="flex flex-wrap justify-center mb-6">
         {productCards}
       </div>
+      {/* Filter Popup */}
+      {isFilterPopupOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-lg">
+            <div className="flex justify-between">
+              <h2 className="text-xl font-semibold mb-4">Select Duration</h2>
+              <button
+                onClick={() => setIsFilterPopupOpen(false)}
+                className="text-red-500 hover:text-red-700 mt-2"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="mb-4">
+              <button
+                onClick={() => handleFilterDurationChange("lastWeek")}
+                className="w-full bg-gray-200 p-2 rounded-lg mb-2"
+              >
+                Last Week
+              </button>
+              <button
+                onClick={() => handleFilterDurationChange("lastMonth")}
+                className="w-full bg-gray-200 p-2 rounded-lg mb-2"
+              >
+                Last Month
+              </button>
+              <button
+                onClick={() => handleFilterDurationChange("lastYear")}
+                className="w-full bg-gray-200 p-2 rounded-lg mb-2"
+              >
+                Last Year
+              </button>
+              <button
+                onClick={() => handleFilterDurationChange("custom")}
+                className="w-full bg-gray-200 p-2 rounded-lg mb-2"
+              >
+                Custom
+              </button>
+
+              {/* Custom Date Range */}
+              {selectedFilterDuration === "custom" && (
+                <div className="flex flex-col">
+                  <label>Start Date:</label>
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={customStartDate}
+                    onChange={handleCustomDateChange}
+                    className="border p-2 rounded-md mb-2"
+                  />
+                  <label>End Date:</label>
+                  <input
+                    type="date"
+                    name="endDate"
+                    value={customEndDate}
+                    onChange={handleCustomDateChange}
+                    className="border p-2 rounded-md mb-2"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      
 
       {/* Modal for Transaction Form */}
-    
-          {isModalOpen && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      {isModalOpen && (
+            <div className="mt-16 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
               <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-lg">
                 <div className="flex justify-between">
                   <h2 className="text-xl font-semibold mb-4">Add Transaction</h2>
@@ -298,124 +474,139 @@ const Stock = () => {
               </div>
             </div>
           )}
-      
 
-      {/* Display Purchase and Sale Transactions Side by Side */}
-      <div className="mt-4 w-full flex flex-col items-center gap-9">
-        {/* Purchase Transactions Table */}
-        <div className="w-full bg-white shadow-md rounded-lg overflow-x-auto">
-          <h2 className="text-xl font-semibold mb-4 p-3">Purchase Transactions</h2>
-          <table className="min-w-full border-collapse border border-gray-200">
-            <thead>
-              <tr>
-                <th className="border border-gray-300 p-2 text-center">Date</th>
-                <th className="border border-gray-300 p-2 text-center">Dealer Name</th>
-                <th className="border border-gray-300 p-2 text-center">Product Name</th>
-                <th className="border border-gray-300 p-2 text-center">Quantity</th>
-                <th className="border border-gray-300 p-2 text-center">Price per Unit (₹)</th>
-                <th className="border border-gray-300 p-2 text-center">Total Price (₹)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {entries.length > 0 ? (
-                entries.map(
-                  (entry, index) =>
-                    entry.type === "purchase" && (
-                      <tr
-                        key={index}
-                        onClick={() => handleRowClick(entry.dealerName)} // Open modal with dealer transactions
-                        className="hover:bg-gray-200 cursor-pointer"
-                      >
-                        <td className="border border-gray-300 p-2 text-center">
-                          {moment(entry.timestamp).format("DD MMM YYYY")}
-                        </td>
-                        <td className="border border-gray-300 p-2 text-center">
-                          {entry.dealerName}
-                        </td>
-                        <td className="border border-gray-300 p-2 text-center">
-                          {entry.productName}
-                        </td>
-                        <td className="border border-gray-300 p-2 text-center">
-                          {entry.quantity}
-                        </td>
-                        <td className="border border-gray-300 p-2 text-center">
-                          {entry.pricePerUnit}
-                        </td>
-                        <td className="border border-gray-300 p-2 text-center">
-                          {entry.totalPrice}
-                        </td>
-                      </tr>
-                    )
-                )
-              ) : (
-                <tr>
-                  <td colSpan="6" className="text-center p-2">
-                    No purchases found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+          
+      {/* Purchase Transactions Table */}
+      <div className="w-full flex justify-between p-3">
+  <h2 className="text-xl font-semibold">Purchase Transactions</h2>
+  <div className="flex items-center gap-2">
+    <input
+      type="text"
+      value={purchaseSearch}
+      onChange={(e) => setPurchaseSearch(e.target.value)}
+      placeholder="Search by name or product"
+      className=" border border-gray-300 rounded-lg p-2 outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    <select
+      value={filterDuration}
+      onChange={(e) => setFilterDuration(e.target.value)}
+      className="border border-gray-300 rounded-lg p-2 outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      <option value="">All Time</option>
+      <option value="7">Last 7 Days</option>
+      <option value="30">Last 30 Days</option>
+      <option value="365">Last 1 Year</option>
+    </select>
+    <CiFilter className="text-3xl cursor-pointer" onClick={handleFilterClick} />
+  </div>
+</div>
+<div className="w-full bg-white shadow-md rounded-lg overflow-x-auto mb-6">
+  <table className="min-w-full border-collapse border border-gray-200">
+    <thead>
+      <tr>
+        <th className="border border-gray-300 p-2 text-center">Date</th>
+        <th className="border border-gray-300 p-2 text-center">Dealer Name</th>
+        <th className="border border-gray-300 p-2 text-center">Product Name</th>
+        <th className="border border-gray-300 p-2 text-center">Quantity</th>
+        <th className="border border-gray-300 p-2 text-center">Price per Unit (₹)</th>
+        <th className="border border-gray-300 p-2 text-center">Total Price (₹)</th>
+        <th className="border border-gray-300 p-2 text-center">Amount Paid </th>
+        <th className="border border-gray-300 p-2 text-center">Amount Due </th>
+        <th className="border border-gray-300 p-2 text-center">Actions</th>
+        
 
-        {/* Sale Transactions Table */}
-        <div className="w-full bg-white shadow-md rounded-lg overflow-x-auto mt-6">
-          <h2 className="text-xl font-semibold mb-4 p-3">Sale Transactions</h2>
-          <table className="min-w-full border-collapse border border-gray-200">
-            <thead>
-              <tr>
-                <th className="border border-gray-300 p-2 text-center">Date</th>
-                <th className="border border-gray-300 p-2 text-center">Dealer Name</th>
-                <th className="border border-gray-300 p-2 text-center">Product Name</th>
-                <th className="border border-gray-300 p-2 text-center">Quantity</th>
-                <th className="border border-gray-300 p-2 text-center">Price per Unit (₹)</th>
-                <th className="border border-gray-300 p-2 text-center">Total Price (₹)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {entries.length > 0 ? (
-                entries.map(
-                  (entry, index) =>
-                    entry.type === "sale" && (
-                      <tr
-                        key={index}
-                        onClick={() => handleRowClick(entry.dealerName)} // Open modal with dealer transactions
-                        className="hover:bg-gray-200 cursor-pointer"
-                      >
-                        <td className="border border-gray-300 p-2 text-center">
-                          {moment(entry.timestamp).format("DD MMM YYYY")}
-                        </td>
-                        <td className="border border-gray-300 p-2 text-center">
-                          {entry.dealerName}
-                        </td>
-                        <td className="border border-gray-300 p-2 text-center">
-                          {entry.productName}
-                        </td>
-                        <td className="border border-gray-300 p-2 text-center">
-                          {entry.quantity}
-                        </td>
-                        <td className="border border-gray-300 p-2 text-center">
-                          {entry.pricePerUnit}
-                        </td>
-                        <td className="border border-gray-300 p-2 text-center">
-                          {entry.totalPrice}
-                        </td>
-                      </tr>
-                    )
-                )
-              ) : (
-                <tr>
-                  <td colSpan="6" className="text-center p-2">
-                    No sales found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+      </tr>
+    </thead>
+    <tbody>
+      {filteredPurchaseEntries.length > 0 ? (
+        filteredPurchaseEntries.map((entry, index) => (
+          <tr
+            key={index}
+           
+            className="hover:bg-gray-200 cursor-pointer"
+          >
+            <td className="border border-gray-300 p-2 text-center">
+              {moment(entry.timestamp).format("DD MMM YYYY")}
+            </td>
+            <td className="border border-gray-300 p-2 text-center hover:bg-gray-600 hover:text-white"  onClick={() => handleRowClick(entry.dealerName)}>{entry.dealerName}</td>
+            <td className="border border-gray-300 p-2 text-center">{entry.productName}</td>
+            <td className="border border-gray-300 p-2 text-center">{entry.quantity}</td>
+            <td className="border border-gray-300 p-2 text-center">{"₹"} {entry.pricePerUnit}</td>
+            <td className="border border-gray-300 p-2 text-center">{"₹"} {entry.totalPrice}</td>
+            <td className="border border-gray-300 p-2 text-center"><span className="flex items-center gap-4">{"₹"} {entry.totalPrice} <MdEdit onClick={edit} /></span></td>
+            <td className="border border-gray-300 p-2 text-center text-red-700 text-lg">{"₹"} {entry.totalPrice}</td>
+            <td className="border border-gray-300 p-2 text-center"><span className="flex gap-4"><MdEdit /> <MdDelete /></span></td>
+            
+
+
+          </tr>
+        ))
+      ) : (
+        <tr>
+          <td colSpan="6" className="text-center p-2">
+            No purchases found.
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
+
+
+      {/* Sale Transactions Table */}
+      <div className="w-full flex justify-between p-3">
+          <h2 className="text-xl font-semibold">Sale Transactions</h2>
+          <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={saleSearch}
+            onChange={(e) => setSaleSearch(e.target.value)}
+            placeholder="Search sales..."
+            className="border border-gray-300 rounded-lg p-2 outline-none focus:ring-2 focus:ring-blue-500"
+          />
+           <CiFilter className="text-3xl cursor-pointer" onClick={handleFilterClick} />
+          </div>
       </div>
-
-      {/* Past Transactions Modal */}
+      <div className="w-full bg-white shadow-md rounded-lg overflow-x-auto">
+        <table className="min-w-full border-collapse border border-gray-200">
+          <thead>
+            <tr>
+              <th className="border border-gray-300 p-2 text-center">Date</th>
+              <th className="border border-gray-300 p-2 text-center">Dealer Name</th>
+              <th className="border border-gray-300 p-2 text-center">Product Name</th>
+              <th className="border border-gray-300 p-2 text-center">Quantity</th>
+              <th className="border border-gray-300 p-2 text-center">Price per Unit (₹)</th>
+              <th className="border border-gray-300 p-2 text-center">Total Price (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredSaleEntries.length > 0 ? (
+              filteredSaleEntries.map((entry, index) => (
+                <tr
+                  key={index}
+                
+                  className="hover:bg-gray-200 cursor-pointer"
+                >
+                  <td className="border border-gray-300 p-2 text-center">
+                    {moment(entry.timestamp).format("DD MMM YYYY")}
+                  </td>
+                  <td className="border border-gray-300 p-2 text-center"   onClick={() => handleRowClick(entry.dealerName)}>{entry.dealerName}</td>
+                  <td className="border border-gray-300 p-2 text-center">{entry.productName}</td>
+                  <td className="border border-gray-300 p-2 text-center">{entry.quantity}</td>
+                  <td className="border border-gray-300 p-2 text-center">{entry.pricePerUnit}</td>
+                  <td className="border border-gray-300 p-2 text-center">{entry.totalPrice}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="text-center p-2">
+                  No sales found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
       {isOpen && selectedDealerTransactions.length > 0 && (
         <div className="fixed inset-0 bg-gray-700 bg-opacity-75 flex items-center justify-center p-5">
           <div className="bg-white p-6 rounded-lg max-w-2xl w-full">
@@ -466,7 +657,30 @@ const Stock = () => {
         </div>
       )}
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
   );
+
+
+  
+  
 };
+
+
+
+
 
 export default Stock;

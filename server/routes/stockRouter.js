@@ -9,8 +9,8 @@ router.post('/', async (req, res) => {
     // Log the incoming request body for debugging
     console.log('Incoming request data:', req.body);
 
-    const { productName, quantity, pricePerUnit, type, dealerName,totalPrice } = req.body;
-    console.log(type)
+    const { productName, quantity,unit, pricePerUnit, type, dealerName,totalPrice } = req.body;
+    console.log(unit)
 
     // Check if all required fields are provided
     if (!productName || !quantity || !pricePerUnit|| !type || !dealerName) {
@@ -20,6 +20,7 @@ router.post('/', async (req, res) => {
     const newStock = new Stock({
       productName,
       quantity,
+      unit,
       pricePerUnit,
       totalPrice,
       type,

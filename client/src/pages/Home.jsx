@@ -16,19 +16,19 @@ import Stock from "./Stock.jsx";
 
 export default function Home() {
   const [activeComponent, setActiveComponent] = useState('dashboard');
-  const [, , removeCookie] = useCookies(["access_token"]); 
-  const navigate = useNavigate(); 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
+  const [, , removeCookie] = useCookies(["access_token"]);
+  const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   useAuth();
 
   const onSidebarClick = (component) => {
     setActiveComponent(component);
-    setIsDropdownOpen(false); 
+    setIsDropdownOpen(false);
   };
 
   const handleLogout = () => {
     removeCookie("access_token");
-    navigate("/"); 
+    navigate("/");
   };
 
   const toggleDropdown = () => {
@@ -43,7 +43,7 @@ export default function Home() {
     <>
       <div className="flex flex-col bg-gray-100">
         {/* Navbar */}
-        <div className="bg-black flex justify-between items-center p-4 min-w-full">
+        <div className="bg-black flex justify-between items-center p-4 min-w-full fixed top-0 left-0 z-20">
           <div className="text-white text-2xl lg:ml-14">Diary</div>
           <div className="md:hidden">
             <HiMenu className="text-white text-2xl" onClick={toggleDropdown} />
@@ -69,9 +69,9 @@ export default function Home() {
           </div>
         )}
 
-        <div className="flex flex-row">
+        <div className="flex flex-row pt-16"> {/* Add pt-16 to push the content below the navbar */}
           <div className="hidden md:flex top-0 left-0 w-1/4 lg:w-1/6 md:min-h-screen md:bg-black z-10 bg-gray-100">
-            <Sidebar aria-label="Default sidebar example">
+            <Sidebar aria-label="Default sidebar example" className="fixed">
               <Sidebar.Items>
                 <Sidebar.ItemGroup className="flex flex-col ml-3 gap-5 md:ml-10 items-start">
                   <Sidebar.Item onClick={() => onSidebarClick('dashboard')} icon={HiChartPie} className={`mt-8 gap-3 ${getItemClass('dashboard')}`}>
@@ -103,7 +103,8 @@ export default function Home() {
             </Sidebar>
           </div>
 
-          <div className="w-full bg-gray-100">
+          {/* Main Content Area */}
+          <div className="w-full bg-gray-100 overflow-y-auto flex-1"> {/* Added pt-16 here as well */}
             {activeComponent === 'dashboard' && <Dashboard />}
             {activeComponent === 'diary' && <Diary />}
             {activeComponent === 'cattle' && <Cattle />}
