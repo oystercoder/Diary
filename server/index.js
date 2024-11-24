@@ -26,7 +26,7 @@ const mongoUrl = process.env.MONGO_URL;
 console.log(mongoUrl);
 
 // CORS configuration
-const allowedOrigins = ['http://localhost:5173', 'http://192.168.50.179:5173'];
+const allowedOrigins = ['http://localhost:5173', 'http://192.168.50.179:5173','https://diaryfarm.onrender.com'];
 
 app.use(cors({
   origin: function (origin, callback) {
