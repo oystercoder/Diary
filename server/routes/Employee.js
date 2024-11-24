@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs';
 // To hash the password (if provided)
 import { Employee } from '../models/Employee.js';
 
