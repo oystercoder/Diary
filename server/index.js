@@ -70,10 +70,10 @@ mongoose.connect(mongoUrl)
 // Check if we need to run HTTPS or HTTP
 if (process.env.NODE_ENV === 'production') {
   // If you are running in production mode and want to use HTTPS:
-  const httpsOptions = {
-    key: fs.readFileSync('path_to_private_key'),  // Replace with your actual SSL key path
-    cert: fs.readFileSync('path_to_certificate'),  // Replace with your actual SSL cert path
-  };
+  // const httpsOptions = {
+  //   key: fs.readFileSync('path_to_private_key'),  // Replace with your actual SSL key path
+  //   cert: fs.readFileSync('path_to_certificate'),  // Replace with your actual SSL cert path
+  // };
 
   // Start HTTPS server on port 3001
   https.createServer(httpsOptions, app).listen(3001, '0.0.0.0', () => {
