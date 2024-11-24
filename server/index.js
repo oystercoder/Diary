@@ -76,7 +76,7 @@ if (process.env.NODE_ENV === 'production') {
   // };
 
   // Start HTTPS server on port 3001
-  https.createServer(httpsOptions, app).listen(3001, '0.0.0.0', () => {
+  https.createServer( app).listen(3001, '0.0.0.0', () => {
     console.log('HTTPS Server is running on https://192.168.50.179:3001');
   });
 } else {
