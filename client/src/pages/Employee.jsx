@@ -22,7 +22,7 @@ const Employee = () => {
   const toggleForm = () => {
     setShowForm(!showForm);
   };
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
+  const apiUrl = '/api';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,14 +55,20 @@ const Employee = () => {
   };
 
   const fetchEmployees = async () => {
-    setLoadingEmployees(true);
+    setLoading(true);
     try {
-      const response = await axios.get(`${apiUrl}/employees`);
-      setEmployees(response.data);
+      const response = await fetch(`${apiUrl}/employees`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch employees');
+      }
+      const data = await response.json();
+      setEmployees(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error("Error fetching employees:", error);
+      console.error('Error fetching employees:', error);
+      setEmployees([]);
+      setError('Failed to fetch employees');
     } finally {
-      setLoadingEmployees(false);
+      setLoading(false);
     }
   };
 
@@ -173,7 +179,7 @@ const Employee = () => {
   return (
     <>
       <div className="flex justify-between w-full">
-        <span className="text-center mt-8 ml-11 items-start">Employee Details:</span>
+        <span className="text-center mt-8 ml-11 items-start font-bold text-2xl">Employee Details:</span>
         <div className="flex space-x-4">
           <span className="text-center mt-8 bg-black p-3 rounded-lg mr-14">
             <button
@@ -187,8 +193,8 @@ const Employee = () => {
       </div>
 
       {showForm && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className='relative bg-white p-6 rounded-lg shadow-lg w-full max-w-lg overflow-auto max-h-[80vh]'>
+  <div className="mt-12 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className='relative bg-white p-6 rounded-lg shadow-lg w-full max-w-lg overflow-auto max-h-[90vh]'>
       {/* Close Button */}
       <button 
         onClick={() => setShowForm(false)} 

@@ -22,33 +22,29 @@ const Login = () => {
         }
 
         try {
-            // Correctly reference environment variable
-            const apiUrl = import.meta.env.VITE_API_URL;
-            console.log(apiUrl); // Log API URL for debugging
-
-            const res = await axios.post(`${apiUrl}/auth/login`, {
-                email,
-                password, // Removed `status` as it wasn't defined in your code
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: email,
+                    password
+                })
             });
 
-            // Log response status for debugging
-            console.log(res.status);
-
-            // Check response data for the token
-            if (res.status === 200 && res.data.token) {
-                setCookie('access_token', res.data.token, { path: '/' }); // Set cookie with path
-                alert('Success in login');
-                setEmail('');
-                setPassword('');
-                navigate('/home');
-            } else {
-                alert('Login failed. Please check your credentials.');
+            if (!response.ok) {
+                throw new Error('Invalid credentials');
             }
+
+            const data = await response.json();
+            setCookie('access_token', data.token, { path: '/' });
+            alert('Success in login');
+            setEmail('');
+            setPassword('');
+            navigate('/home');
         } catch (error) {
-            const message = error.response
-                ? error.response.data.message
-                : 'Network error. Please try again.';
-            alert(message);
+            alert(error.message || 'Login failed. Please try again.');
         }
     };
 

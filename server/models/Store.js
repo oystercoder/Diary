@@ -10,12 +10,15 @@ const storeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  storeId: {
+  contactNumber: {
     type: String,
     required: true,
-    unique: true,
   },
-}, { timestamps: true }); // Optional: add timestamps for createdAt and updatedAt
+  manager: {
+    type: String,
+    required: true,
+  }
+}, { timestamps: true, collection: 'stores' });
 
 const Store = mongoose.model('Store', storeSchema);
 export default Store;

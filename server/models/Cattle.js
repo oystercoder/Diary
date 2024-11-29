@@ -39,7 +39,7 @@ const cattleSchema = new mongoose.Schema({
     type: String,
     required: false, // Change to true if you want this field to be required
   },
-}, { timestamps: true }); // Optional: add timestamps for createdAt and updatedAt
+}, { timestamps: true, collection: 'cattles' }); // Explicitly set the collection name
 
 const Cattle = mongoose.model('Cattle', cattleSchema);
 export default Cattle; // Ensure you're using default export

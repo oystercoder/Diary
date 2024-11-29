@@ -10,11 +10,9 @@ const Products = () => {
   });
   const [products, setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
-  
+  const apiUrl = '/api';
 
   useEffect(() => {
     fetchProducts();
@@ -23,10 +21,14 @@ const Products = () => {
   const fetchProducts = async () => {
     try {
       const response = await fetch(`${apiUrl}/products`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
       const data = await response.json();
-      setProducts(data);
+      setProducts(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching products:', error);
+      setProducts([]);
     }
   };
 
@@ -49,7 +51,8 @@ const Products = () => {
     }
 
     const numericUnits = parseFloat(units);
-    if (isNaN(numericUnits) || isNaN(price)) {
+    const numericPrice = parseFloat(price);
+    if (isNaN(numericUnits) || isNaN(numericPrice)) {
       alert('Units and price must be valid numbers.');
       return;
     }
@@ -57,12 +60,12 @@ const Products = () => {
     const sanitizedData = {
       name: name.trim(),
       units: numericUnits,
-      price: parseFloat(price),
+      price: numericPrice,
       unitType,
     };
 
     try {
-      const response = await fetch(`http://{apiUrl}/products`, {
+      const response = await fetch(`${apiUrl}/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,13 +85,35 @@ const Products = () => {
       } else {
         const errorText = await response.text();
         console.error('Error adding product:', errorText);
+        alert('Failed to add product. Please try again.');
       }
     } catch (error) {
       console.error('Error:', error);
+      alert('Failed to add product. Please try again.');
     }
   };
 
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const handleDelete = async (productId) => {
+    if (window.confirm('Are you sure you want to delete this product?')) {
+      try {
+        const response = await fetch(`${apiUrl}/products/${productId}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          await fetchProducts();
+        } else {
+          alert('Failed to delete product');
+        }
+      } catch (error) {
+        console.error('Error deleting product:', error);
+        alert('Failed to delete product');
+      }
+    }
+  };
+
+  // Calculate pagination
+  const totalPages = Math.ceil((products?.length || 0) / itemsPerPage);
   const indexOfLastProduct = currentPage * itemsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
   const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
@@ -99,43 +124,9 @@ const Products = () => {
     }
   };
 
-  // Handle delete product
-  const handleDelete = async (productId) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
-      try {
-        const response = await fetch(`{apiUrl}/products/${productId}`, {
-          method: 'DELETE',
-        });
-
-        if (response.ok) {
-          fetchProducts();
-        } else {
-          console.error('Failed to delete product');
-        }
-      } catch (error) {
-        console.error('Error deleting product:', error);
-      }
-    }
-  };
-
-  // Handle edit product
-  const handleEdit = (product) => {
-    setFormData({
-      ...product,
-      unitType: product.unitType || 'liters',
-    });
-    setIsModalOpen(true); // Open modal to edit
-  };
-
-  // Handle view product
-  const handleView = (product) => {
-    alert(`Viewing product: ${product.name}`);
-    // You could show a modal or redirect to a detailed view page here
-  };
-
   return (
     <div className="flex flex-col items-center h-screen bg-gray-200 w-full">
-      <div className="w-3/4 flex justify-between items-center mb-4 p-4">
+      <div className="w-full flex justify-between items-center mb-4 p-4">
         <h1 className="text-2xl font-bold">Product List</h1>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -166,14 +157,8 @@ const Products = () => {
                   </td>
                   <td className="py-4 px-2 border-b">{product.name}</td>
                   <td className="py-4 px-2 border-b">{product.units} {product.unitType}</td>
-                  <td className="py-4 px-2 border-b">₹{product.price}</td>
+                  <td className="py-4 px-2 border-b">₹{product.price.toLocaleString('en-IN')}</td>
                   <td className="py-4 px-2 border-b flex justify-center gap-3">
-                    <button onClick={() => handleView(product)} className="text-blue-500">
-                      <FaEye />
-                    </button>
-                    <button onClick={() => handleEdit(product)} className="text-yellow-500">
-                      <FaEdit />
-                    </button>
                     <button onClick={() => handleDelete(product._id)} className="text-red-500">
                       <FaTrash />
                     </button>
@@ -186,31 +171,33 @@ const Products = () => {
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex items-center justify-center mt-4">
-        <button
-          onClick={() => changePage(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-4 py-2 bg-gray-300 text-black rounded-l-lg hover:bg-gray-400 disabled:opacity-50"
-        >
-          Prev
-        </button>
-        {Array.from({ length: totalPages }, (_, index) => (
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center mt-4">
           <button
-            key={index + 1}
-            onClick={() => changePage(index + 1)}
-            className={`px-4 py-2 ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'} hover:bg-gray-400`}
+            onClick={() => changePage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-gray-300 text-black rounded-l-lg hover:bg-gray-400 disabled:opacity-50"
           >
-            {index + 1}
+            Prev
           </button>
-        ))}
-        <button
-          onClick={() => changePage(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-gray-300 text-black rounded-r-lg hover:bg-gray-400 disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => changePage(index + 1)}
+              className={`px-4 py-2 ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'} hover:bg-gray-400`}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => changePage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-gray-300 text-black rounded-r-lg hover:bg-gray-400 disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      )}
 
       {/* Modal for Product Entry Form */}
       {isModalOpen && (
@@ -220,11 +207,10 @@ const Products = () => {
               onClick={() => setIsModalOpen(false)}
               className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
             >
-              &times; {/* Close icon */}
+              &times;
             </button>
 
             <form onSubmit={handleSubmit}>
-              {/* Product Name Input */}
               <div className="mb-4 flex flex-col gap-2">
                 <label className="block text-sm font-medium text-gray-900">Product Name:</label>
                 <input
@@ -238,72 +224,59 @@ const Products = () => {
                 />
               </div>
 
-              {/* Units Section (Radio buttons for Liters/Kgs) */}
               <div className="mb-4 flex flex-col gap-2">
                 <label className="block text-sm font-medium text-gray-900">Units:</label>
-                <div className="flex items-center space-x-4">
-                  <div>
-                    <input
-                      type="radio"
-                      id="liters"
-                      name="unitType"
-                      value="liters"
-                      checked={formData.unitType === 'liters'}
-                      onChange={handleUnitChange}
-                      className="mr-2"
-                    />
-                    <label htmlFor="liters">Liters</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      id="kgs"
-                      name="unitType"
-                      value="kgs"
-                      checked={formData.unitType === 'kgs'}
-                      onChange={handleUnitChange}
-                      className="mr-2"
-                    />
-                    <label htmlFor="kgs">Kgs</label>
-                  </div>
-                </div>
-              </div>
-
-              {/* Units Input */}
-              <div className="mb-4 flex flex-col gap-2">
-                <label className="block text-sm font-medium text-gray-900">Quantity:</label>
                 <input
-                  type="number"
+                  type="text"
                   name="units"
                   value={formData.units}
                   onChange={handleChange}
                   className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder={`Enter quantity in ${formData.unitType}`}
+                  placeholder="Enter units"
                   required
                 />
               </div>
 
-              {/* Price Input */}
               <div className="mb-4 flex flex-col gap-2">
-                <label className="block text-sm font-medium text-gray-900">Store Price (₹):</label>
+                <label className="block text-sm font-medium text-gray-900">Unit Type:</label>
+                <select
+                  name="unitType"
+                  value={formData.unitType}
+                  onChange={handleChange}
+                  className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="liters">Liters</option>
+                  <option value="kgs">Kgs</option>
+                  <option value="units">Units</option>
+                </select>
+              </div>
+
+              <div className="mb-4 flex flex-col gap-2">
+                <label className="block text-sm font-medium text-gray-900">Price:</label>
                 <input
-                  type="number"
+                  type="text"
                   name="price"
                   value={formData.price}
                   onChange={handleChange}
                   className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="₹"
+                  placeholder="Enter price"
                   required
                 />
               </div>
 
-              {/* Submit Button */}
-              <div className="flex items-center justify-center">
+              <div className="flex justify-end gap-4">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
                 <button
                   type="submit"
-                  className="w-full max-w-xs mt-8 text-2xl bg-black text-white p-2 rounded-lg hover:bg-gray-800 transition duration-300"
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
-                  Add Product
+                  Save
                 </button>
               </div>
             </form>

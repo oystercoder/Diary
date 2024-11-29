@@ -1,121 +1,160 @@
-import React, { useState } from "react"; 
-import { Sidebar } from "flowbite-react";
-import { HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser, HiViewBoards, HiMenu } from "react-icons/hi";
-import { useCookies } from 'react-cookie';
-import { useNavigate } from 'react-router-dom';
-import Diary from './Diary'; 
-import Cattle from './Cattle'; 
-import Dashboard from "./Dashboard";
+import React from "react";
+import { Link, Routes, Route, useNavigate } from "react-router-dom";
+import { FaHome, FaStore, FaWarehouse, FaUsers, FaSignOutAlt } from "react-icons/fa";
+import { GiCow, GiMilkCarton } from "react-icons/gi";
+import { MdInventory } from "react-icons/md";
+import Stock from "./Stock";
+import Cattle from "./Cattle";
+import Diary from "./Diary";
 import Employee from "./Employee";
-import Wholesale from "./Wholesale";
 import Products from "./Products";
 import Stores from "./Stores";
-import useAuth from './Auth.jsx';
-import Stock from "./Stock.jsx";
+import Wholesale from "./Wholesale";
 
-
-export default function Home() {
-  const [activeComponent, setActiveComponent] = useState('dashboard');
-  const [, , removeCookie] = useCookies(["access_token"]);
+const Home = () => {
   const navigate = useNavigate();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  useAuth();
-
-  const onSidebarClick = (component) => {
-    setActiveComponent(component);
-    setIsDropdownOpen(false);
-  };
 
   const handleLogout = () => {
-    removeCookie("access_token");
-    navigate("/");
+    localStorage.removeItem('token');
+    navigate('/');
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(prev => !prev);
-  };
-
-  const getItemClass = (component) => {
-    return activeComponent === component ? 'text-black bg-gray-300' : 'text-white hover:bg-gray-700';
-  };
+  const menuItems = [
+    { path: "dashboard", icon: <FaHome size={20} />, text: "Home" },
+    { path: "cattle", icon: <GiCow size={20} />, text: "Cattle" },
+    { path: "diary", icon: <GiMilkCarton size={20} />, text: "Diary" },
+    { path: "employee", icon: <FaUsers size={20} />, text: "Employee" },
+    { path: "products", icon: <MdInventory size={20} />, text: "Products" },
+    { path: "stores", icon: <FaStore size={20} />, text: "Stores" },
+    { path: "stock", icon: <MdInventory size={20} />, text: "Stock" },
+    { path: "wholesale", icon: <FaWarehouse size={20} />, text: "Wholesale" },
+  ];
 
   return (
-    <>
-      <div className="flex flex-col bg-gray-100">
-        {/* Navbar */}
-        <div className="bg-black flex justify-between items-center p-4 min-w-full fixed top-0 left-0 z-20">
-          <div className="text-white text-2xl lg:ml-14">Diary</div>
-          <div className="md:hidden">
-            <HiMenu className="text-white text-2xl" onClick={toggleDropdown} />
-          </div>
-          <div className="hidden md:flex">
-            <button onClick={handleLogout} className="text-white">Sign Out</button>
-          </div>
+    <div className="flex h-screen">
+      {/* Sidebar */}
+      <div className="w-64 bg-black text-white">
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-8 text-center text-white">
+            Dairy Farm
+          </h1>
+          <nav>
+            <ul className="space-y-4">
+              {menuItems.map((item) => (
+                <li key={item.path}>
+                  <Link
+                    to={item.path}
+                    className="flex items-center gap-3 p-3 rounded-lg transition-all duration-300 hover:bg-gray-800 hover:text-white"
+                  >
+                    <span className="text-gray-400 group-hover:text-white">
+                      {item.icon}
+                    </span>
+                    <span className="font-medium">{item.text}</span>
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-300 hover:bg-gray-800 hover:text-white text-left"
+                >
+                  <span className="text-gray-400 group-hover:text-white">
+                    <FaSignOutAlt size={20} />
+                  </span>
+                  <span className="font-medium">Logout</span>
+                </button>
+              </li>
+            </ul>
+          </nav>
         </div>
-
-        {/* Dropdown Menu for small screens */}
-        {isDropdownOpen && (
-          <div className="absolute left-0 right-0 top-16 md:hidden bg-black z-20 flex flex-col items-start">
-            <div className="flex flex-col ml-3 gap-2 items-start">
-              <div onClick={() => onSidebarClick('dashboard')} className={`p-2 cursor-pointer ${getItemClass('dashboard')}`}>Dashboard</div>
-              <div onClick={() => onSidebarClick('diary')} className={`p-2 cursor-pointer ${getItemClass('diary')}`}>Diary</div>
-              <div onClick={() => onSidebarClick('cattle')} className={`p-2 cursor-pointer ${getItemClass('cattle')}`}>Cattle</div>
-              <div onClick={() => onSidebarClick('stores')} className={`p-2 cursor-pointer ${getItemClass('stores')}`}>Stores</div>
-              <div onClick={() => onSidebarClick('products')} className={`p-2 cursor-pointer ${getItemClass('products')}`}>Products</div>
-              <div onClick={() => onSidebarClick('employee')} className={`p-2 cursor-pointer ${getItemClass('employee')}`}>Employee</div>
-              <div onClick={() => onSidebarClick('wholesale')} className={`p-2 cursor-pointer ${getItemClass('wholesale')}`}>Wholesale</div>
-              <div onClick={handleLogout} className="text-white p-2 cursor-pointer">Logout</div>
+        {/* Footer */}
+        <div className="absolute bottom-0 w-64 p-6 border-t border-gray-800">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center">
+              <FaUsers className="text-gray-400" />
             </div>
-          </div>
-        )}
-
-        <div className="flex flex-row pt-16"> {/* Add pt-16 to push the content below the navbar */}
-          <div className="hidden md:flex top-0 left-0 w-1/4 lg:w-1/6 md:min-h-screen md:bg-black z-10 bg-gray-100">
-            <Sidebar aria-label="Default sidebar example" className="fixed">
-              <Sidebar.Items>
-                <Sidebar.ItemGroup className="flex flex-col ml-3 gap-5 md:ml-10 items-start">
-                  <Sidebar.Item onClick={() => onSidebarClick('dashboard')} icon={HiChartPie} className={`mt-8 gap-3 ${getItemClass('dashboard')}`}>
-                    Dashboard
-                  </Sidebar.Item>
-                  <Sidebar.Item onClick={() => onSidebarClick('diary')} icon={HiViewBoards} className={`gap-3 ${getItemClass('diary')}`}>
-                    Diary
-                  </Sidebar.Item>
-                  <Sidebar.Item onClick={() => onSidebarClick('cattle')} icon={HiInbox} className={`gap-3 ${getItemClass('cattle')}`}>
-                    Cattle
-                  </Sidebar.Item>
-                  <Sidebar.Item onClick={() => onSidebarClick('stores')} icon={HiUser} className={`gap-3 ${getItemClass('stores')}`}>
-                    Stores
-                  </Sidebar.Item>
-                  <Sidebar.Item onClick={() => onSidebarClick('products')} icon={HiShoppingBag} className={`gap-3 ${getItemClass('products')}`}>
-                    Products
-                  </Sidebar.Item>
-                  <Sidebar.Item onClick={() => onSidebarClick('employee')} icon={HiArrowSmRight} className={`gap-3 ${getItemClass('employee')}`}>
-                    Employee
-                  </Sidebar.Item>
-                  <Sidebar.Item onClick={() => onSidebarClick('wholesale')} icon={HiTable} className={`gap-3 ${getItemClass('wholesale')}`}>
-                    Wholesale
-                  </Sidebar.Item>
-                  <Sidebar.Item onClick={() => onSidebarClick('stock')} icon={HiTable} className={`gap-3 ${getItemClass('stock')}`}>
-                    Stock
-                  </Sidebar.Item>
-                </Sidebar.ItemGroup>
-              </Sidebar.Items>
-            </Sidebar>
-          </div>
-
-          {/* Main Content Area */}
-          <div className="w-full bg-gray-100 overflow-y-auto flex-1"> {/* Added pt-16 here as well */}
-            {activeComponent === 'dashboard' && <Dashboard />}
-            {activeComponent === 'diary' && <Diary />}
-            {activeComponent === 'cattle' && <Cattle />}
-            {activeComponent === 'employee' && <Employee />}
-            {activeComponent === 'wholesale' && <Wholesale />}
-            {activeComponent === 'products' && <Products />}
-            {activeComponent === 'stores' && <Stores />}
-            {activeComponent === 'stock' && <Stock />}
+            <div>
+              <p className="text-sm font-medium text-white">Admin Panel</p>
+              <p className="text-xs text-gray-400">Dairy Management</p>
+            </div>
           </div>
         </div>
       </div>
-    </>
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto bg-gray-100">
+        <div className="p-8">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="cattle" element={<Cattle />} />
+            <Route path="diary" element={<Diary />} />
+            <Route path="employee" element={<Employee />} />
+            <Route path="products" element={<Products />} />
+            <Route path="stores" element={<Stores />} />
+            <Route path="stock" element={<Stock />} />
+            <Route path="wholesale" element={<Wholesale />} />
+          </Routes>
+        </div>
+      </div>
+    </div>
   );
-}
+};
+
+// Dashboard Component
+const Dashboard = () => {
+  const stats = [
+    { title: "Total Cattle", value: "124", change: "+12%", icon: <GiCow size={24} /> },
+    { title: "Daily Production", value: "2,450 L", change: "+5%", icon: <GiMilkCarton size={24} /> },
+    { title: "Active Stores", value: "48", change: "+8%", icon: <FaStore size={24} /> },
+    { title: "Employees", value: "32", change: "+3%", icon: <FaUsers size={24} /> },
+  ];
+
+  return (
+    <div>
+      <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
+      
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {stats.map((stat, index) => (
+          <div key={index} className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                {stat.icon}
+              </div>
+              <span className="text-sm font-medium text-green-500">{stat.change}</span>
+            </div>
+            <h3 className="text-gray-500 text-sm mb-1">{stat.title}</h3>
+            <p className="text-2xl font-bold">{stat.value}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Recent Activity Section */}
+      <div className="bg-white rounded-lg p-6 shadow-md">
+        <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
+        <div className="space-y-4">
+          {[
+            { action: "New cattle added", time: "2 hours ago", type: "addition" },
+            { action: "Milk production updated", time: "4 hours ago", type: "update" },
+            { action: "Store inventory checked", time: "6 hours ago", type: "check" },
+            { action: "Employee shift updated", time: "8 hours ago", type: "update" },
+          ].map((activity, index) => (
+            <div key={index} className="flex items-center justify-between p-4 hover:bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-4">
+                <div className={`w-2 h-2 rounded-full ${
+                  activity.type === 'addition' ? 'bg-green-500' :
+                  activity.type === 'update' ? 'bg-blue-500' : 'bg-yellow-500'
+                }`} />
+                <span className="font-medium">{activity.action}</span>
+              </div>
+              <span className="text-sm text-gray-500">{activity.time}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Home;

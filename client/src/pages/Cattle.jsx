@@ -13,27 +13,34 @@ const Cattle = () => {
     offspring: '',
   });
 
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
-  const [cattleList, setCattleList] = useState([]); // State to hold the list of cattle
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cattleList, setCattleList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'; // Default to localhost if no API URL is set
+  const apiUrl = '/api';
 
   useEffect(() => {
     const fetchCattle = async () => {
       try {
-        const response = await fetch(`${apiUrl}/cattle`); // Using dynamic API URL
-        if (response.ok) {
-          const data = await response.json();
-          setCattleList(data); // Update cattle list state
-        } else {
-          console.error('Error fetching cattle entries');
+        setIsLoading(true);
+        setError(null);
+        const response = await fetch(`${apiUrl}/cattle`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch cattle data');
         }
+        const data = await response.json();
+        // Ensure we always have an array
+        setCattleList(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Error:', error);
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchCattle(); // Fetch cattle data when component mounts
+    fetchCattle();
   }, [apiUrl]);
 
   const handleChange = (e) => {
@@ -56,35 +63,35 @@ const Cattle = () => {
         body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Cattle entry saved:', data);
-        setCattleList((prevList) => [...prevList, data.newCattle]); // Add new cattle to the list
-        setFormData({ // Reset form data after submission
-          animal: '',
-          breed: '',
-          gender: '',
-          age: '',
-          breeding: '',
-          price: '',
-          location: '',
-          name: '',
-          offspring: '',
-        });
-        setIsModalOpen(false); // Close modal after submission
-      } else {
-        const errorData = await response.json();
-        console.error('Error saving cattle entry:', errorData);
+      if (!response.ok) {
+        throw new Error('Failed to save cattle entry');
       }
+
+      const data = await response.json();
+      console.log('Cattle entry saved:', data);
+      setCattleList((prevList) => [...prevList, data.newCattle]);
+      setFormData({
+        animal: '',
+        breed: '',
+        gender: '',
+        age: '',
+        breeding: '',
+        price: '',
+        location: '',
+        name: '',
+        offspring: '',
+      });
+      setIsModalOpen(false);
     } catch (error) {
       console.error('Error:', error);
+      alert('Failed to save cattle entry: ' + error.message);
     }
   };
 
   return (
     <div className="flex flex-col items-center bg-gray-200 p-6 h-lvh">
       {/* Header Section */}
-      <div className="w-3/4 flex justify-between items-center mb-4">
+      <div className="w-full flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Cattle List</h1>
         <button 
           onClick={() => setIsModalOpen(true)} 
@@ -102,11 +109,10 @@ const Cattle = () => {
               onClick={() => setIsModalOpen(false)} 
               className="absolute top-2 right-2 text-red-500 text-3xl font-bold hover:text-gray-900"
             >
-              &times; {/* Close icon */}
+              &times;
             </button>
             <h2 className="text-xl font-semibold mb-4">Add Cattle Entry</h2>
             <form onSubmit={handleSubmit}>
-
               {/* Animal Select */}
               <div className="mb-4 flex flex-col gap-2">
                 <label htmlFor="animal" className="block text-sm font-medium text-gray-900">Animal:</label>
@@ -116,6 +122,7 @@ const Cattle = () => {
                   value={formData.animal}
                   onChange={handleChange}
                   className="m-0.5 w-full border border-gray-300 text-gray-700 sm:text-sm p-3 rounded-lg"
+                  required
                 >
                   <option value="">Select an animal</option>
                   <option value="COW">COW</option>
@@ -126,6 +133,7 @@ const Cattle = () => {
                 </select>
               </div>
 
+              {/* Other form fields... */}
               {/* Breed Input */}
               <div className="mb-4 flex flex-col gap-2">
                 <label className="block text-sm font-medium text-gray-900">Breed:</label>
@@ -135,6 +143,7 @@ const Cattle = () => {
                   value={formData.breed}
                   onChange={handleChange}
                   className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
 
@@ -147,8 +156,10 @@ const Cattle = () => {
                       type="radio"
                       name="gender"
                       value="male"
+                      checked={formData.gender === 'male'}
                       onChange={handleChange}
                       className="form-radio h-4 text-blue-600 focus:ring-blue-500"
+                      required
                     />
                     <span className="text-gray-700 ml-2">Male</span>
                   </label>
@@ -157,8 +168,10 @@ const Cattle = () => {
                       type="radio"
                       name="gender"
                       value="female"
+                      checked={formData.gender === 'female'}
                       onChange={handleChange}
                       className="form-radio h-4 text-black focus:ring-black"
+                      required
                     />
                     <span className="text-gray-700 ml-2">Female</span>
                   </label>
@@ -174,6 +187,7 @@ const Cattle = () => {
                   value={formData.age}
                   onChange={handleChange}
                   className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
 
@@ -186,6 +200,7 @@ const Cattle = () => {
                   value={formData.breeding}
                   onChange={handleChange}
                   className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
 
@@ -198,7 +213,7 @@ const Cattle = () => {
                   value={formData.price}
                   onChange={handleChange}
                   className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="₹"
+                  required
                 />
               </div>
 
@@ -211,6 +226,7 @@ const Cattle = () => {
                   value={formData.location}
                   onChange={handleChange}
                   className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
 
@@ -223,6 +239,7 @@ const Cattle = () => {
                   value={formData.name}
                   onChange={handleChange}
                   className="border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
 
@@ -255,36 +272,44 @@ const Cattle = () => {
       {/* Cattle List Table */}
       <div className="mt-6 ml-5 mr-5 w-full bg-white rounded-lg shadow-md p-4">
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-300">
-            <thead>
-              <tr>
-                <th className="py-2 px-4 border-b text-left">Animal</th>
-                <th className="py-2 px-4 border-b text-left">Breed</th>
-                <th className="py-2 px-4 border-b text-left">Gender</th>
-                <th className="py-2 px-4 border-b text-center">Age</th>
-                <th className="py-2 px-4 border-b text-left">Breeding</th>
-                <th className="py-2 px-4 border-b text-right">Price</th>
-                <th className="py-2 px-4 border-b text-left">Location</th>
-                <th className="py-2 px-4 border-b text-left">Name</th>
-                <th className="py-2 px-4 border-b text-center">Offspring</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cattleList.map((cattle, index) => (
-                <tr key={index} className="hover:bg-gray-100">
-                  <td className="py-2 px-4 border-b text-left">{cattle.animal}</td>
-                  <td className="py-2 px-4 border-b text-left">{cattle.breed}</td>
-                  <td className="py-2 px-4 border-b text-left">{cattle.gender}</td>
-                  <td className="py-2 px-4 border-b text-center">{cattle.age}</td>
-                  <td className="py-2 px-4 border-b text-left">{cattle.breeding}</td>
-                  <td className="py-2 px-4 border-b text-right">{cattle.price}</td>
-                  <td className="py-2 px-4 border-b text-left">{cattle.location}</td>
-                  <td className="py-2 px-4 border-b text-left">{cattle.name}</td>
-                  <td className="py-2 px-4 border-b text-center">{cattle.offspring}</td>
+          {isLoading ? (
+            <div className="text-center py-4">Loading cattle data...</div>
+          ) : error ? (
+            <div className="text-center text-red-500 py-4">{error}</div>
+          ) : cattleList.length === 0 ? (
+            <div className="text-center text-gray-500 py-4">No cattle entries found. Add some using the button above.</div>
+          ) : (
+            <table className="min-w-full bg-white border border-gray-300">
+              <thead>
+                <tr>
+                  <th className="py-2 px-4 border-b text-left">Animal</th>
+                  <th className="py-2 px-4 border-b text-left">Breed</th>
+                  <th className="py-2 px-4 border-b text-left">Gender</th>
+                  <th className="py-2 px-4 border-b text-center">Age</th>
+                  <th className="py-2 px-4 border-b text-left">Breeding</th>
+                  <th className="py-2 px-4 border-b text-right">Price</th>
+                  <th className="py-2 px-4 border-b text-left">Location</th>
+                  <th className="py-2 px-4 border-b text-left">Name</th>
+                  <th className="py-2 px-4 border-b text-center">Offspring</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {cattleList.map((cattle, index) => (
+                  <tr key={cattle._id || index} className="hover:bg-gray-100">
+                    <td className="py-2 px-4 border-b text-left">{cattle.animal}</td>
+                    <td className="py-2 px-4 border-b text-left">{cattle.breed}</td>
+                    <td className="py-2 px-4 border-b text-left">{cattle.gender}</td>
+                    <td className="py-2 px-4 border-b text-center">{cattle.age}</td>
+                    <td className="py-2 px-4 border-b text-left">{cattle.breeding}</td>
+                    <td className="py-2 px-4 border-b text-right">{cattle.price}</td>
+                    <td className="py-2 px-4 border-b text-left">{cattle.location}</td>
+                    <td className="py-2 px-4 border-b text-left">{cattle.name}</td>
+                    <td className="py-2 px-4 border-b text-center">{cattle.offspring}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

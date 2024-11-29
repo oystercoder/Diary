@@ -40,9 +40,18 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const cattleList = await Cattle.find(); // Fetch all entries from the Cattle model
-    res.status(200).json(cattleList); // Send back the list of cattle
+    const cattleList = await Cattle.find().lean();
+    console.log('Backend cattleList:', cattleList); // Debug log
+    
+    // Ensure we're sending an array
+    if (!Array.isArray(cattleList)) {
+      console.warn('Warning: cattleList is not an array');
+      return res.status(200).json([]);
+    }
+    
+    res.status(200).json(cattleList);
   } catch (error) {
+    console.error('Error fetching cattle:', error);
     res.status(500).json({ message: 'Error fetching cattle entries', error });
   }
 });

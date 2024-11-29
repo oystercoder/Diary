@@ -1,26 +1,36 @@
 import React, { useState, useEffect } from 'react';
+import { FaStore, FaEdit, FaTrash } from 'react-icons/fa';
 
 const Store = () => {
-  const [location, setLocation] = useState('');
-  const [storeId, setStoreId] = useState('');
-  const [storeName, setStoreName] = useState('');
-  const [error, setError] = useState('');
-  const [stores, setStores] = useState([]); // State to hold fetched stores
-  const [isModalOpen, setIsModalOpen] = useState(false); 
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";// State for modal visibility
+  const [stores, setStores] = useState([]);  // Initialize as empty array
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newStore, setNewStore] = useState({
+    name: '',
+    location: '',
+    contactNumber: '',
+    manager: ''
+  });
+  const apiUrl = '/api';
 
-  const handleLocationChange = (e) => {
-    const loc = e.target.value;
-    setLocation(loc);
-
-    if (loc) {
-      const words = loc.split(' ').map(word => word.charAt(0).toUpperCase());
-      const generatedId = `STORE-${words.join('')}-${Math.floor(Math.random() * 1000)}`;
-      setStoreId(generatedId);
-    } else {
-      setStoreId('');
+  // Fetch stores
+  const fetchStores = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/stores`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch stores');
+      }
+      const data = await response.json();
+      // Ensure data is an array, if not, convert it or use empty array
+      setStores(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error fetching stores:', error);
+      setStores([]); // Set to empty array on error
     }
   };
+
+  useEffect(() => {
+    fetchStores();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,137 +40,118 @@ const Store = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name: storeName, location, storeId }),
+        body: JSON.stringify(newStore),
       });
 
       if (!response.ok) {
         throw new Error('Failed to add store');
       }
 
-      const data = await response.json();
-      console.log(data);
-      fetchStores(); // Refresh the store list
-      resetForm();
+      await fetchStores(); // Refresh the list
+      setIsModalOpen(false);
+      setNewStore({ name: '', location: '', contactNumber: '', manager: '' });
     } catch (error) {
-      setError(error.message);
+      console.error('Error adding store:', error);
+      alert('Failed to add store');
     }
   };
-
-  const resetForm = () => {
-    setStoreName('');
-    setLocation('');
-    setStoreId('');
-    setIsModalOpen(false); // Close modal after submission
-  };
-
-  const fetchStores = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/stores`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch stores');
-      }
-      const data = await response.json();
-
-      setStores(data);
-    } catch (error) {
-      setError(error.message);
-    }
-  };
-
-  useEffect(() => {
-    fetchStores(); // Fetch stores on component mount
-  }, []);
 
   return (
-    <div className='flex flex-col items-center bg-gray-200 h-lvh p-6'>
-      {/* Header Section */}
-      <div className="w-3/4 flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Store List</h1>
-        <button 
-          onClick={() => setIsModalOpen(true)} 
-          className="text-xl bg-black text-white p-2 rounded-lg hover:bg-blue-700 transition duration-300"
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Stores Management</h1>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
         >
-          Add Store
+          Add New Store
         </button>
       </div>
 
-      {/* Store Table */}
-      <table className="w-full ml-5 mr-5 bg-white shadow-md rounded-lg border border-gray-300 overflow-hidden">
-        <thead>
-          <tr className=" text-black border border-b-2">
-            <th className="py-3 px-6 text-left">Store ID</th>
-            <th className="py-3 px-6 text-left">Store Name</th>
-            <th className="py-3 px-6 text-left">Location</th>
-          </tr>
-        </thead>
-        <tbody>
-          {stores.map((store) => (
-            <tr key={store.storeId} className="border-b hover:bg-gray-100">
-              <td className="py-4 px-6">{store.storeId}</td>
-              <td className="py-4 px-6">{store.name}</td>
-              <td className="py-4 px-6">{store.location}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* Stores Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {stores.map((store, index) => (
+          <div key={index} className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-blue-100 rounded-full">
+                <FaStore className="text-blue-500 text-xl" />
+              </div>
+              <div className="flex gap-2">
+                <button className="text-blue-500 hover:text-blue-700">
+                  <FaEdit />
+                </button>
+                <button className="text-red-500 hover:text-red-700">
+                  <FaTrash />
+                </button>
+              </div>
+            </div>
+            <h3 className="text-xl font-semibold mb-2">{store.name}</h3>
+            <div className="space-y-2 text-gray-600">
+              <p>Location: {store.location}</p>
+              <p>Contact: {store.contactNumber}</p>
+              <p>Manager: {store.manager}</p>
+            </div>
+          </div>
+        ))}
+      </div>
 
-      {/* Modal for Store Entry Form */}
+      {/* Add Store Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className='relative bg-white p-6 rounded-lg shadow-lg w-full max-w-lg overflow-auto max-h-[80vh]'>
-            <button 
-              onClick={() => setIsModalOpen(false)} 
-              className="absolute top-2 right-2 text-red-500 text-3xl font-bold hover:text-gray-900"
-            >
-              &times; {/* Close icon */}
-            </button>
-            <h2 className='text-xl font-semibold mb-4'>Add Store Entry</h2>
-            <form onSubmit={handleSubmit}>
-
-              {error && <div className="text-red-500 mb-2">{error}</div>}
-
-              {/* Store Name Input */}
-              <div className="mb-4 flex flex-col gap-1">
-                <label className="block text-sm font-medium text-gray-900 mb-2">Store Name:</label>
-                <input 
-                  type="text" 
-                  value={storeName}
-                  onChange={(e) => setStoreName(e.target.value)}
-                  className='border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500' 
-                  placeholder="Enter store name"
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Add New Store</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Store Name</label>
+                <input
+                  type="text"
+                  value={newStore.name}
+                  onChange={(e) => setNewStore({...newStore, name: e.target.value})}
+                  className="w-full p-2 border rounded"
                   required
                 />
               </div>
-
-              {/* Location Input */}
-              <div className="mb-4 flex flex-col gap-1">
-                <label className="block text-sm font-medium text-gray-900 mb-2">Location:</label>
-                <input 
-                  type="text" 
-                  value={location}
-                  onChange={handleLocationChange}
-                  className='border border-gray-300 rounded-lg w-full p-2 outline-none focus:ring-2 focus:ring-blue-500' 
-                  placeholder="Enter location"
+              <div>
+                <label className="block text-sm font-medium mb-1">Location</label>
+                <input
+                  type="text"
+                  value={newStore.location}
+                  onChange={(e) => setNewStore({...newStore, location: e.target.value})}
+                  className="w-full p-2 border rounded"
                   required
                 />
               </div>
-
-              {/* Store ID Display */}
-              <div className="mb-4 flex flex-col gap-1">
-                <label className="block text-sm font-medium text-gray-900 mb-2">Store ID:</label>
-                <input 
-                  type="text" 
-                  value={storeId} 
-                  readOnly 
-                  className='border border-gray-300 rounded-lg w-full p-2 outline-none bg-gray-100'
+              <div>
+                <label className="block text-sm font-medium mb-1">Contact Number</label>
+                <input
+                  type="tel"
+                  value={newStore.contactNumber}
+                  onChange={(e) => setNewStore({...newStore, contactNumber: e.target.value})}
+                  className="w-full p-2 border rounded"
+                  required
                 />
               </div>
-
-              {/* Submit Button */}
-              <div className="flex items-center justify-center">
-                <button 
-                  type="submit" 
-                  className="w-full max-w-xs mt-4 text-2xl bg-black text-white p-2 rounded-lg hover:bg-gray-800 transition duration-300"
+              <div>
+                <label className="block text-sm font-medium mb-1">Manager Name</label>
+                <input
+                  type="text"
+                  value={newStore.manager}
+                  onChange={(e) => setNewStore({...newStore, manager: e.target.value})}
+                  className="w-full p-2 border rounded"
+                  required
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
                   Add Store
                 </button>
@@ -171,6 +162,6 @@ const Store = () => {
       )}
     </div>
   );
-}
+};
 
 export default Store;
